@@ -19,6 +19,7 @@ const statusConfig = {
 const TopBar = () => {
   const { caseId, courtStatus, elapsedSeconds } = useCourtroomContext();
   const navigate = useNavigate();
+  const { isDark, toggle: toggleTheme } = useTheme();
   const status = statusConfig[courtStatus];
 
   return (
