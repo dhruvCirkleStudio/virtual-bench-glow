@@ -1,6 +1,7 @@
 import { useCourtroomContext } from '@/context/CourtroomContext';
-import { LogOut, Signal, SignalHigh, SignalLow, SignalMedium } from 'lucide-react';
+import { LogOut, SignalHigh, Sun, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@/hooks/useTheme';
 
 const formatTime = (seconds: number) => {
   const h = Math.floor(seconds / 3600);
