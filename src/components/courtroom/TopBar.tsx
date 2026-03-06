@@ -1,7 +1,6 @@
 import { useCourtroomContext } from '@/context/CourtroomContext';
-import { LogOut, SignalHigh, Sun, Moon } from 'lucide-react';
+import { LogOut, Signal, SignalHigh, SignalLow, SignalMedium } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '@/hooks/useTheme';
 
 const formatTime = (seconds: number) => {
   const h = Math.floor(seconds / 3600);
@@ -19,7 +18,6 @@ const statusConfig = {
 const TopBar = () => {
   const { caseId, courtStatus, elapsedSeconds } = useCourtroomContext();
   const navigate = useNavigate();
-  const { isDark, toggle: toggleTheme } = useTheme();
   const status = statusConfig[courtStatus];
 
   return (
@@ -43,18 +41,11 @@ const TopBar = () => {
         </div>
 
         {/* Right: Network + Exit */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5 text-muted-foreground">
             <SignalHigh className="w-4 h-4 text-green-500" />
             <span className="text-xs">Strong</span>
           </div>
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-lg hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-colors"
-            title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-          >
-            {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </button>
           <button
             onClick={() => navigate('/')}
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors text-sm font-medium"
