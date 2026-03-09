@@ -98,12 +98,12 @@ const Avatar3D = ({
 
 // Courtroom furniture
 const JudgeBench = ({ theme }: { theme: string }) => {
-  const woodColor = theme === "light" ? "#5c2d0a" : "#6b3510";
-  const woodDark = theme === "light" ? "#3d1c06" : "#4a2208";
-  const feltColor = "#1a4731";
-  const brassColor = "#b8860b";
-  const marbleColor = theme === "light" ? "#c0c4cc" : "#8a7d6a";
-  const marbleColor2 = theme === "light" ? "#b0b4bc" : "#7d7060";
+  const woodColor = theme === "light" ? "#8b6914" : "#6b3510";
+  const woodDark = theme === "light" ? "#6b4c10" : "#4a2208";
+  const feltColor = theme === "light" ? "#2a6b4a" : "#1a4731";
+  const brassColor = "#d4a030";
+  const marbleColor = theme === "light" ? "#dce0e6" : "#8a7d6a";
+  const marbleColor2 = theme === "light" ? "#cdd1d8" : "#7d7060";
 
   return (
     <group position={[0, 0, -4]}>
@@ -210,9 +210,9 @@ const LawyerTable = ({
 }) => {
   const x = side === "left" ? -2.5 : 2.5;
   // Prosecution (left) = navy blue felt; Defense (right) = burgundy felt
-  const feltColor = side === "left" ? "#1b3a5c" : "#5c1a2a";
-  const woodColor = theme === "light" ? "#4a2008" : "#5c2a0e";
-  const woodDark = theme === "light" ? "#2e1204" : "#3d1c06";
+  const feltColor = side === "left" ? "#2a5580" : "#802a3a";
+  const woodColor = theme === "light" ? "#8b6914" : "#5c2a0e";
+  const woodDark = theme === "light" ? "#6b4c10" : "#3d1c06";
   const brassColor = "#b8860b";
 
   return (
@@ -254,9 +254,9 @@ const LawyerTable = ({
 };
 
 const WitnessStand = ({ theme }: { theme: string }) => {
-  const woodColor = theme === "light" ? "#4a2008" : "#5c2a0e";
-  const woodDark = theme === "light" ? "#2e1204" : "#3d1c06";
-  const feltColor = "#1a4731";
+  const woodColor = theme === "light" ? "#8b6914" : "#5c2a0e";
+  const woodDark = theme === "light" ? "#6b4c10" : "#3d1c06";
+  const feltColor = theme === "light" ? "#2a6b4a" : "#1a4731";
   const brassColor = "#b8860b";
 
   return (
@@ -351,8 +351,8 @@ const EvidenceScreen = ({ theme }: { theme: string }) => {
 
 const Gallery = ({ theme }: { theme: string }) => {
   // Traditional courtroom pew wood
-  const pewColor = theme === "light" ? "#4a2008" : "#5c2a0e";
-  const pewDark = theme === "light" ? "#2e1204" : "#3d1c06";
+  const pewColor = theme === "light" ? "#8b6914" : "#5c2a0e";
+  const pewDark = theme === "light" ? "#6b4c10" : "#3d1c06";
   return (
     <group position={[0, 0, 3]}>
       {[0, 1, 2].map((row) => (
@@ -380,8 +380,8 @@ const Gallery = ({ theme }: { theme: string }) => {
 
 const Floor = ({ theme }: { theme: string }) => {
   // Marble-style floor
-  const floorColor = theme === "light" ? "#b8bcc6" : "#6e6355";
-  const floorColor2 = theme === "light" ? "#a8acb6" : "#5e5448";
+  const floorColor = theme === "light" ? "#d8dce4" : "#6e6355";
+  const floorColor2 = theme === "light" ? "#c8ccd4" : "#5e5448";
   return (
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
@@ -403,8 +403,8 @@ const Floor = ({ theme }: { theme: string }) => {
 
 const Walls = ({ theme }: { theme: string }) => {
   // Warm court beige/cream walls with wainscoting
-  const wallColor = theme === "light" ? "#d0d4da" : "#4a4235";
-  const wainscotColor = theme === "light" ? "#5c2d0a" : "#6b3510";
+  const wallColor = theme === "light" ? "#e4e8ee" : "#4a4235";
+  const wainscotColor = theme === "light" ? "#8b6914" : "#6b3510";
 
   return (
     <group>
