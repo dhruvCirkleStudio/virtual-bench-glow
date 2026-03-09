@@ -181,16 +181,9 @@ const Avatar3D = ({
   participant: Participant;
   position: [number, number, number];
 }) => {
-  // Use special judge avatar
-  if (participant.role === "judge") {
-    return <JudgeAvatar3D participant={participant} position={position} />;
-  }
-
   const groupRef = useRef<THREE.Group>(null);
   const glowRef = useRef<THREE.Mesh>(null);
   const roleColor = ROLE_COLORS[participant.role];
-
-  // Suit color by side
   const suitColor = participant.side === "prosecution" ? "#1b3a5c" : participant.side === "defense" ? "#2a1a3e" : "#2a2a2a";
 
   useFrame(() => {
@@ -198,6 +191,11 @@ const Avatar3D = ({
       glowRef.current.scale.setScalar(1 + Math.sin(Date.now() * 0.005) * 0.1);
     }
   });
+
+  // Use special judge avatar
+  if (participant.role === "judge") {
+    return <JudgeAvatar3D participant={participant} position={position} />;
+  }
 
   return (
     <group ref={groupRef} position={position}>
