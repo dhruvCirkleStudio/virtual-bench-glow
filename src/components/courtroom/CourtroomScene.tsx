@@ -11,7 +11,169 @@ import { ROLE_COLORS, type Participant } from "@/types/courtroom";
 import { useTheme } from "@/components/theme-provider";
 import * as THREE from "three";
 
-// Simple avatar - a cylinder body + sphere head
+// Gavel component sitting on the bench
+const Gavel = ({ position }: { position: [number, number, number] }) => (
+  <group position={position} rotation={[0, Math.PI / 5, 0]}>
+    {/* Handle */}
+    <mesh position={[0, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+      <cylinderGeometry args={[0.025, 0.03, 0.45, 10]} />
+      <meshStandardMaterial color="#3d1c06" roughness={0.4} metalness={0.0} />
+    </mesh>
+    {/* Mallet head */}
+    <mesh position={[0.18, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+      <cylinderGeometry args={[0.055, 0.055, 0.16, 12]} />
+      <meshStandardMaterial color="#5c2d0a" roughness={0.35} metalness={0.05} />
+    </mesh>
+    {/* Brass band on mallet */}
+    <mesh position={[0.18, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+      <cylinderGeometry args={[0.058, 0.058, 0.025, 12]} />
+      <meshStandardMaterial color="#b8860b" metalness={0.85} roughness={0.15} />
+    </mesh>
+    {/* Gavel block */}
+    <mesh position={[0, -0.04, 0.05]}>
+      <boxGeometry args={[0.12, 0.04, 0.1]} />
+      <meshStandardMaterial color="#3d1c06" roughness={0.4} />
+    </mesh>
+  </group>
+);
+
+// Judge avatar — robes, wig, face details
+const JudgeAvatar3D = ({
+  participant,
+  position,
+}: {
+  participant: Participant;
+  position: [number, number, number];
+}) => {
+  const glowRef = useRef<THREE.Mesh>(null);
+  const roleColor = ROLE_COLORS[participant.role];
+
+  useFrame(() => {
+    if (glowRef.current && participant.isSpeaking) {
+      glowRef.current.scale.setScalar(1 + Math.sin(Date.now() * 0.005) * 0.1);
+    }
+  });
+
+  return (
+    <group position={position}>
+      {/* Speaking glow */}
+      {participant.isSpeaking && (
+        <mesh ref={glowRef} position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[0.6, 0.78, 32]} />
+          <meshBasicMaterial color={roleColor} transparent opacity={0.45} />
+        </mesh>
+      )}
+
+      {/* Black judge robe - wide at bottom */}
+      <mesh position={[0, 0.52, 0]}>
+        <cylinderGeometry args={[0.28, 0.36, 1.0, 10]} />
+        <meshStandardMaterial color="#1a1a1a" roughness={0.8} />
+      </mesh>
+      {/* Robe collar / white band */}
+      <mesh position={[0, 1.02, 0]}>
+        <cylinderGeometry args={[0.18, 0.22, 0.12, 10]} />
+        <meshStandardMaterial color="#e8e0d0" roughness={0.7} />
+      </mesh>
+      {/* White jabot / cravat */}
+      <mesh position={[0, 0.97, 0.15]}>
+        <boxGeometry args={[0.12, 0.14, 0.04]} />
+        <meshStandardMaterial color="#f5f0e8" roughness={0.8} />
+      </mesh>
+      {/* Gold badge / crest on robe */}
+      <mesh position={[0.12, 0.82, 0.27]}>
+        <cylinderGeometry args={[0.045, 0.045, 0.02, 8]} />
+        <meshStandardMaterial color="#d4a542" metalness={0.85} roughness={0.15} />
+      </mesh>
+
+      {/* Neck */}
+      <mesh position={[0, 1.1, 0]}>
+        <cylinderGeometry args={[0.09, 0.1, 0.14, 10]} />
+        <meshStandardMaterial color="#d4a077" roughness={0.6} />
+      </mesh>
+      {/* Head / face */}
+      <mesh position={[0, 1.28, 0]}>
+        <sphereGeometry args={[0.19, 16, 16]} />
+        <meshStandardMaterial color="#d4a077" roughness={0.55} />
+      </mesh>
+      {/* Eyes */}
+      <mesh position={[-0.07, 1.3, 0.17]}>
+        <sphereGeometry args={[0.028, 8, 8]} />
+        <meshStandardMaterial color="#2a1a0a" roughness={0.3} />
+      </mesh>
+      <mesh position={[0.07, 1.3, 0.17]}>
+        <sphereGeometry args={[0.028, 8, 8]} />
+        <meshStandardMaterial color="#2a1a0a" roughness={0.3} />
+      </mesh>
+      {/* Eyebrows */}
+      <mesh position={[-0.07, 1.35, 0.175]} rotation={[0, 0, 0.15]}>
+        <boxGeometry args={[0.065, 0.014, 0.01]} />
+        <meshStandardMaterial color="#6b4c2a" roughness={0.5} />
+      </mesh>
+      <mesh position={[0.07, 1.35, 0.175]} rotation={[0, 0, -0.15]}>
+        <boxGeometry args={[0.065, 0.014, 0.01]} />
+        <meshStandardMaterial color="#6b4c2a" roughness={0.5} />
+      </mesh>
+      {/* Nose */}
+      <mesh position={[0, 1.26, 0.19]}>
+        <sphereGeometry args={[0.025, 8, 8]} />
+        <meshStandardMaterial color="#c0906a" roughness={0.6} />
+      </mesh>
+      {/* Mouth — slight stern frown */}
+      <mesh position={[0, 1.19, 0.18]} rotation={[0.1, 0, 0]}>
+        <boxGeometry args={[0.07, 0.012, 0.01]} />
+        <meshStandardMaterial color="#8b5a4a" roughness={0.5} />
+      </mesh>
+      {/* Ears */}
+      <mesh position={[-0.19, 1.27, 0]}>
+        <sphereGeometry args={[0.04, 8, 8]} />
+        <meshStandardMaterial color="#c8956a" roughness={0.6} />
+      </mesh>
+      <mesh position={[0.19, 1.27, 0]}>
+        <sphereGeometry args={[0.04, 8, 8]} />
+        <meshStandardMaterial color="#c8956a" roughness={0.6} />
+      </mesh>
+
+      {/* Judge's white powdered wig */}
+      <mesh position={[0, 1.42, 0]}>
+        <sphereGeometry args={[0.22, 14, 14]} />
+        <meshStandardMaterial color="#f0ede8" roughness={0.9} />
+      </mesh>
+      {/* Wig curls front */}
+      {[-0.12, 0, 0.12].map((x, i) => (
+        <mesh key={i} position={[x, 1.35, 0.17]}>
+          <sphereGeometry args={[0.055, 8, 8]} />
+          <meshStandardMaterial color="#ede8e0" roughness={0.9} />
+        </mesh>
+      ))}
+      {/* Wig side curls */}
+      <mesh position={[-0.21, 1.22, 0.04]}>
+        <sphereGeometry args={[0.07, 8, 8]} />
+        <meshStandardMaterial color="#ede8e0" roughness={0.9} />
+      </mesh>
+      <mesh position={[0.21, 1.22, 0.04]}>
+        <sphereGeometry args={[0.07, 8, 8]} />
+        <meshStandardMaterial color="#ede8e0" roughness={0.9} />
+      </mesh>
+
+      {/* Gold crown/laurel accent on wig */}
+      <mesh position={[0, 1.56, 0]}>
+        <torusGeometry args={[0.17, 0.018, 8, 24]} />
+        <meshStandardMaterial color="#d4a542" metalness={0.9} roughness={0.1} />
+      </mesh>
+
+      {/* Name label */}
+      <Text position={[0, 1.85, 0]} fontSize={0.11} color="white" anchorX="center" anchorY="bottom" font={undefined}>
+        {participant.name.split(" ").pop()}
+      </Text>
+      {/* Role badge */}
+      <Text position={[0, 1.73, 0]} fontSize={0.08} color={roleColor} anchorX="center" anchorY="bottom" font={undefined}>
+        JUDGE
+      </Text>
+    </group>
+  );
+};
+
+// Standard avatar for non-judge roles
 const Avatar3D = ({
   participant,
   position,
@@ -19,11 +181,19 @@ const Avatar3D = ({
   participant: Participant;
   position: [number, number, number];
 }) => {
+  // Use special judge avatar
+  if (participant.role === "judge") {
+    return <JudgeAvatar3D participant={participant} position={position} />;
+  }
+
   const groupRef = useRef<THREE.Group>(null);
   const glowRef = useRef<THREE.Mesh>(null);
   const roleColor = ROLE_COLORS[participant.role];
 
-  useFrame((_, delta) => {
+  // Suit color by side
+  const suitColor = participant.side === "prosecution" ? "#1b3a5c" : participant.side === "defense" ? "#2a1a3e" : "#2a2a2a";
+
+  useFrame(() => {
     if (glowRef.current && participant.isSpeaking) {
       glowRef.current.scale.setScalar(1 + Math.sin(Date.now() * 0.005) * 0.1);
     }
@@ -33,45 +203,74 @@ const Avatar3D = ({
     <group ref={groupRef} position={position}>
       {/* Speaking glow ring */}
       {participant.isSpeaking && (
-        <mesh
-          ref={glowRef}
-          position={[0, 0.05, 0]}
-          rotation={[-Math.PI / 2, 0, 0]}
-        >
+        <mesh ref={glowRef} position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[0.5, 0.65, 32]} />
           <meshBasicMaterial color={roleColor} transparent opacity={0.4} />
         </mesh>
       )}
-      {/* Body */}
-      <mesh position={[0, 0.5, 0]}>
-        <cylinderGeometry args={[0.2, 0.25, 0.8, 8]} />
-        <meshStandardMaterial color={participant.avatarColor} roughness={0.6} />
+      {/* Legs */}
+      <mesh position={[-0.09, 0.22, 0]}>
+        <boxGeometry args={[0.1, 0.44, 0.12]} />
+        <meshStandardMaterial color={suitColor} roughness={0.7} />
+      </mesh>
+      <mesh position={[0.09, 0.22, 0]}>
+        <boxGeometry args={[0.1, 0.44, 0.12]} />
+        <meshStandardMaterial color={suitColor} roughness={0.7} />
+      </mesh>
+      {/* Body / suit jacket */}
+      <mesh position={[0, 0.62, 0]}>
+        <boxGeometry args={[0.34, 0.42, 0.22]} />
+        <meshStandardMaterial color={suitColor} roughness={0.65} />
+      </mesh>
+      {/* Shirt / white collar */}
+      <mesh position={[0, 0.73, 0.115]}>
+        <boxGeometry args={[0.1, 0.14, 0.02]} />
+        <meshStandardMaterial color="#f0f0f0" roughness={0.7} />
+      </mesh>
+      {/* Tie */}
+      <mesh position={[0, 0.65, 0.118]}>
+        <boxGeometry args={[0.04, 0.2, 0.01]} />
+        <meshStandardMaterial color={roleColor} roughness={0.6} />
+      </mesh>
+      {/* Shoulders */}
+      <mesh position={[-0.21, 0.72, 0]}>
+        <sphereGeometry args={[0.09, 8, 8]} />
+        <meshStandardMaterial color={suitColor} roughness={0.65} />
+      </mesh>
+      <mesh position={[0.21, 0.72, 0]}>
+        <sphereGeometry args={[0.09, 8, 8]} />
+        <meshStandardMaterial color={suitColor} roughness={0.65} />
+      </mesh>
+      {/* Neck */}
+      <mesh position={[0, 0.88, 0]}>
+        <cylinderGeometry args={[0.07, 0.08, 0.1, 8]} />
+        <meshStandardMaterial color="#d4a077" roughness={0.6} />
       </mesh>
       {/* Head */}
-      <mesh position={[0, 1.15, 0]}>
-        <sphereGeometry args={[0.2, 16, 16]} />
-        <meshStandardMaterial color={participant.avatarColor} roughness={0.5} />
+      <mesh position={[0, 1.03, 0]}>
+        <sphereGeometry args={[0.17, 14, 14]} />
+        <meshStandardMaterial color="#d4a077" roughness={0.55} />
+      </mesh>
+      {/* Eyes */}
+      <mesh position={[-0.06, 1.05, 0.155]}>
+        <sphereGeometry args={[0.022, 8, 8]} />
+        <meshStandardMaterial color="#1a1a1a" />
+      </mesh>
+      <mesh position={[0.06, 1.05, 0.155]}>
+        <sphereGeometry args={[0.022, 8, 8]} />
+        <meshStandardMaterial color="#1a1a1a" />
+      </mesh>
+      {/* Hair */}
+      <mesh position={[0, 1.14, 0]}>
+        <sphereGeometry args={[0.175, 10, 10, 0, Math.PI * 2, 0, Math.PI * 0.45]} />
+        <meshStandardMaterial color={participant.avatarColor} roughness={0.8} />
       </mesh>
       {/* Name label */}
-      <Text
-        position={[0, 1.6, 0]}
-        fontSize={0.12}
-        color="white"
-        anchorX="center"
-        anchorY="bottom"
-        font={undefined}
-      >
+      <Text position={[0, 1.4, 0]} fontSize={0.11} color="white" anchorX="center" anchorY="bottom" font={undefined}>
         {participant.name.split(" ").pop()}
       </Text>
       {/* Role badge */}
-      <Text
-        position={[0, 1.45, 0]}
-        fontSize={0.08}
-        color={roleColor}
-        anchorX="center"
-        anchorY="bottom"
-        font={undefined}
-      >
+      <Text position={[0, 1.28, 0]} fontSize={0.08} color={roleColor} anchorX="center" anchorY="bottom" font={undefined}>
         {participant.role.toUpperCase()}
       </Text>
     </group>
