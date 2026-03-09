@@ -80,8 +80,8 @@ const Avatar3D = ({
 
 // Courtroom furniture
 const JudgeBench = ({ theme }: { theme: string }) => {
-  const baseColor = theme === "light" ? "#f1f5f9" : "#2a2d3a";
-  const deskColor = theme === "light" ? "#e2e8f0" : "#363a4a";
+  const baseColor = theme === "light" ? "#f1f5f9" : "#3a3e4e";
+  const deskColor = theme === "light" ? "#e2e8f0" : "#464b5e";
 
   return (
     <group position={[0, 0, -4]}>
@@ -112,8 +112,8 @@ const LawyerTable = ({
   theme: string;
 }) => {
   const x = side === "left" ? -2.5 : 2.5;
-  const baseColor = theme === "light" ? "#cbd5e1" : "#252838";
-  const topColor = theme === "light" ? "#94a3b8" : "#2e3348";
+  const baseColor = theme === "light" ? "#cbd5e1" : "#353848";
+  const topColor = theme === "light" ? "#94a3b8" : "#3e4258";
 
   return (
     <group position={[x, 0, -1]}>
@@ -130,8 +130,8 @@ const LawyerTable = ({
 };
 
 const WitnessStand = ({ theme }: { theme: string }) => {
-  const baseColor = theme === "light" ? "#f1f5f9" : "#2a2d3a";
-  const topColor = theme === "light" ? "#e2e8f0" : "#363a4a";
+  const baseColor = theme === "light" ? "#f1f5f9" : "#3a3e4e";
+  const topColor = theme === "light" ? "#e2e8f0" : "#464b5e";
 
   return (
     <group position={[3.5, 0, -3]}>
@@ -148,9 +148,9 @@ const WitnessStand = ({ theme }: { theme: string }) => {
 };
 
 const EvidenceScreen = ({ theme }: { theme: string }) => {
-  const frameColor = theme === "light" ? "#e2e8f0" : "#1e2030";
-  const screenColor = theme === "light" ? "#ffffff" : "#1a1d2e";
-  const emissiveColor = theme === "light" ? "#f8fafc" : "#252a40";
+  const frameColor = theme === "light" ? "#e2e8f0" : "#2e3242";
+  const screenColor = theme === "light" ? "#ffffff" : "#282c3c";
+  const emissiveColor = theme === "light" ? "#f8fafc" : "#353a50";
 
   return (
     <group position={[0, 2.5, -5.5]}>
@@ -192,7 +192,7 @@ const EvidenceScreen = ({ theme }: { theme: string }) => {
 };
 
 const Gallery = ({ theme }: { theme: string }) => {
-  const benchColor = theme === "light" ? "#cbd5e1" : "#222536";
+  const benchColor = theme === "light" ? "#cbd5e1" : "#323546";
   return (
     <group position={[0, 0, 3]}>
       {[0, 1, 2].map((row) => (
@@ -206,7 +206,7 @@ const Gallery = ({ theme }: { theme: string }) => {
 };
 
 const Floor = ({ theme }: { theme: string }) => {
-  const floorColor = theme === "light" ? "#e2e8f0" : "#1c1f2e";
+  const floorColor = theme === "light" ? "#e2e8f0" : "#2a2e3e";
   return (
     <mesh
       rotation={[-Math.PI / 2, 0, 0]}
@@ -220,8 +220,8 @@ const Floor = ({ theme }: { theme: string }) => {
 };
 
 const Walls = ({ theme }: { theme: string }) => {
-  const backWallColor = theme === "light" ? "#f8fafc" : "#222536";
-  const sideWallColor = theme === "light" ? "#f1f5f9" : "#1e2132";
+  const backWallColor = theme === "light" ? "#f8fafc" : "#323546";
+  const sideWallColor = theme === "light" ? "#f1f5f9" : "#2e3142";
 
   return (
     <group>
@@ -371,7 +371,7 @@ const CourtroomScene = () => {
           target={[0, 1.5, -1]}
         />
         {currentTheme !== "light" && (
-          <fog attach="fog" args={["#1c1f2e", 12, 28]} />
+          <fog attach="fog" args={["#2a2e3e", 14, 30]} />
         )}
       </Canvas>
     </div>
