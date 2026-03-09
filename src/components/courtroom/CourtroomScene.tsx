@@ -274,8 +274,8 @@ const EvidenceScreen = ({ theme }: { theme: string }) => {
       </Text>
       {/* Screen corner screws */}
       {[[-1.95, 1.3], [1.95, 1.3], [-1.95, -1.3], [1.95, -1.3]].map(([sx, sy], i) => (
-        <mesh key={i} position={[sx, sy, 0.05]}>
-          <cylinderGeometry args={[0.05, 0.05, 0.04, 8]} rotation={[Math.PI / 2, 0, 0]} />
+        <mesh key={i} position={[sx, sy, 0.05]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.05, 0.05, 0.04, 8]} />
           <meshStandardMaterial color={brassColor} metalness={0.9} roughness={0.1} />
         </mesh>
       ))}
