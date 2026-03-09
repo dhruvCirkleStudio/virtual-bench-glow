@@ -15,13 +15,16 @@ import * as THREE from "three";
 const Avatar3D = ({
   participant,
   position,
+  rotation = [0, 0, 0],
 }: {
   participant: Participant;
   position: [number, number, number];
+  rotation?: [number, number, number];
 }) => {
   const groupRef = useRef<THREE.Group>(null);
   const glowRef = useRef<THREE.Mesh>(null);
   const roleColor = ROLE_COLORS[participant.role];
+  const isLawyer = participant.role === "lawyer";
 
   useFrame((_, delta) => {
     if (glowRef.current && participant.isSpeaking) {
@@ -30,7 +33,7 @@ const Avatar3D = ({
   });
 
   return (
-    <group ref={groupRef} position={position}>
+    <group ref={groupRef} position={position} rotation={rotation as any}>
       {/* Speaking glow ring */}
       {participant.isSpeaking && (
         <mesh
@@ -45,8 +48,23 @@ const Avatar3D = ({
       {/* Body */}
       <mesh position={[0, 0.5, 0]}>
         <cylinderGeometry args={[0.2, 0.25, 0.8, 8]} />
-        <meshStandardMaterial color={participant.avatarColor} roughness={0.6} />
+        <meshStandardMaterial color={isLawyer ? "#1a1c23" : participant.avatarColor} roughness={0.6} />
       </mesh>
+      {/* Suit detailing for lawyers */}
+      {isLawyer && (
+        <group position={[0, 0.5, 0.2]}>
+          {/* White shirt triangle */}
+          <mesh position={[0, 0.2, 0.03]} rotation={[0, 0, Math.PI]}>
+            <cylinderGeometry args={[0, 0.1, 0.3, 3]} />
+            <meshStandardMaterial color="#ffffff" roughness={0.9} />
+          </mesh>
+          {/* Tie */}
+          <mesh position={[0, 0.1, 0.04]}>
+            <boxGeometry args={[0.03, 0.2, 0.01]} />
+            <meshStandardMaterial color="#8b0000" roughness={0.5} />
+          </mesh>
+        </group>
+      )}
       {/* Head */}
       <mesh position={[0, 1.15, 0]}>
         <sphereGeometry args={[0.2, 16, 16]} />
@@ -408,9 +426,12 @@ const CourtroomScene = () => {
     const positions: {
       participant: Participant;
       pos: [number, number, number];
+      rot: [number, number, number];
     }[] = [];
+    
+    // Judge sitting behind bench (z=-4), looking out (rot Y=0)
     const judge = participants.find((p) => p.role === "judge");
-    if (judge) positions.push({ participant: judge, pos: [0, 0.8, -3.5] });
+    if (judge) positions.push({ participant: judge, pos: [0, 0.2, -4.5], rot: [0, 0, 0] });
 
     const prosLawyers = participants.filter(
       (p) => p.role === "lawyer" && p.side === "prosecution",
@@ -418,11 +439,13 @@ const CourtroomScene = () => {
     const defLawyers = participants.filter(
       (p) => p.role === "lawyer" && p.side === "defense",
     );
+    
+    // Lawyers look towards judge (rot Y=PI)
     prosLawyers.forEach((p, i) =>
-      positions.push({ participant: p, pos: [-2.5 + i * 0.8, 0, -0.3] }),
+      positions.push({ participant: p, pos: [-2.5 + i * 0.8, 0, -0.3], rot: [0, Math.PI, 0] }),
     );
     defLawyers.forEach((p, i) =>
-      positions.push({ participant: p, pos: [2.5 - i * 0.8, 0, -0.3] }),
+      positions.push({ participant: p, pos: [2.5 - i * 0.8, 0, -0.3], rot: [0, Math.PI, 0] }),
     );
 
     const prosLitigants = participants.filter(
@@ -431,16 +454,19 @@ const CourtroomScene = () => {
     const defLitigants = participants.filter(
       (p) => p.role === "litigant" && p.side === "defense",
     );
+    
+    // Litigants also face judge
     prosLitigants.forEach((p, i) =>
-      positions.push({ participant: p, pos: [-3.5 - i * 0.8, 0, -0.3] }),
+      positions.push({ participant: p, pos: [-3.5 - i * 0.8, 0, -0.3], rot: [0, Math.PI, 0] }),
     );
     defLitigants.forEach((p, i) =>
-      positions.push({ participant: p, pos: [3.5 + i * 0.8, 0, -0.3] }),
+      positions.push({ participant: p, pos: [3.5 + i * 0.8, 0, -0.3], rot: [0, Math.PI, 0] }),
     );
 
     const observers = participants.filter((p) => p.role === "observer");
+    // Observers face judge
     observers.forEach((p, i) =>
-      positions.push({ participant: p, pos: [-1.5 + i * 1.5, 0, 3.5] }),
+      positions.push({ participant: p, pos: [-1.5 + i * 1.5, 0, 3.5], rot: [0, Math.PI, 0] }),
     );
 
     return positions;
@@ -485,19 +511,22 @@ const CourtroomScene = () => {
         <Gallery theme={currentTheme} />
         <BrandText />
 
-        {avatarPositions.map(({ participant, pos }) => (
+        {avatarPositions.map(({ participant, pos, rot }) => (
           <Avatar3D
             key={participant.id}
             participant={participant}
             position={pos}
+            rotation={rot}
           />
         ))}
 
         <ContactShadows
-          position={[0, 0, 0]}
-          opacity={currentTheme === "light" ? 0.15 : 0.4}
-          scale={15}
-          blur={2}
+          position={[0, -0.01, 0]}
+          opacity={currentTheme === "light" ? 0.3 : 0.6}
+          scale={20}
+          blur={1.5}
+          far={10}
+          resolution={512}
         />
         <OrbitControls
           makeDefault
