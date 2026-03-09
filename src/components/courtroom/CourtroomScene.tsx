@@ -80,25 +80,56 @@ const Avatar3D = ({
 
 // Courtroom furniture
 const JudgeBench = ({ theme }: { theme: string }) => {
-  const baseColor = theme === "light" ? "#f1f5f9" : "#3a3e4e";
-  const deskColor = theme === "light" ? "#e2e8f0" : "#464b5e";
+  // Rich mahogany wood for the judge's elevated bench
+  const woodColor = theme === "light" ? "#5c2d0a" : "#6b3510";
+  const woodDark = theme === "light" ? "#3d1c06" : "#4a2208";
+  const feltColor = "#1a4731"; // court green felt
+  const brassColor = "#b8860b";
+  const marbleColor = theme === "light" ? "#d4c8b0" : "#8a7d6a";
 
   return (
     <group position={[0, 0, -4]}>
-      {/* Elevated platform */}
-      <mesh position={[0, 0.4, 0]}>
-        <boxGeometry args={[3, 0.8, 1.5]} />
-        <meshStandardMaterial color={baseColor} roughness={0.3} />
+      {/* Elevated platform - marble */}
+      <mesh position={[0, 0.2, 0]}>
+        <boxGeometry args={[3.8, 0.4, 2]} />
+        <meshStandardMaterial color={marbleColor} roughness={0.2} metalness={0.05} />
       </mesh>
-      {/* Desk surface */}
-      <mesh position={[0, 0.85, 0]}>
-        <boxGeometry args={[3.2, 0.08, 1.6]} />
-        <meshStandardMaterial color={deskColor} roughness={0.4} />
+      {/* Step riser */}
+      <mesh position={[0, 0.1, 1.1]}>
+        <boxGeometry args={[3.8, 0.2, 0.2]} />
+        <meshStandardMaterial color={marbleColor} roughness={0.2} />
       </mesh>
-      {/* Gold trim */}
-      <mesh position={[0, 0.82, 0.82]}>
-        <boxGeometry args={[3.2, 0.04, 0.04]} />
-        <meshStandardMaterial color="#d4a542" metalness={0.8} roughness={0.2} />
+      {/* Main bench body - mahogany */}
+      <mesh position={[0, 0.65, 0]}>
+        <boxGeometry args={[3.4, 0.5, 1.6]} />
+        <meshStandardMaterial color={woodColor} roughness={0.5} />
+      </mesh>
+      {/* Front panel carved detail */}
+      <mesh position={[0, 0.55, 0.82]}>
+        <boxGeometry args={[3.3, 0.3, 0.04]} />
+        <meshStandardMaterial color={woodDark} roughness={0.6} />
+      </mesh>
+      {/* Desk top - green felt surface */}
+      <mesh position={[0, 0.92, 0]}>
+        <boxGeometry args={[3.5, 0.06, 1.7]} />
+        <meshStandardMaterial color={feltColor} roughness={0.9} />
+      </mesh>
+      {/* Brass front trim */}
+      <mesh position={[0, 0.9, 0.86]}>
+        <boxGeometry args={[3.5, 0.06, 0.04]} />
+        <meshStandardMaterial color={brassColor} metalness={0.85} roughness={0.15} />
+      </mesh>
+      {/* Brass corner posts */}
+      {[-1.72, 1.72].map((x, i) => (
+        <mesh key={i} position={[x, 0.7, 0.84]}>
+          <cylinderGeometry args={[0.04, 0.04, 0.5, 8]} />
+          <meshStandardMaterial color={brassColor} metalness={0.85} roughness={0.15} />
+        </mesh>
+      ))}
+      {/* Gavel block on desk */}
+      <mesh position={[1.2, 0.97, 0]}>
+        <boxGeometry args={[0.2, 0.05, 0.15]} />
+        <meshStandardMaterial color={woodDark} roughness={0.4} />
       </mesh>
     </group>
   );
@@ -112,65 +143,119 @@ const LawyerTable = ({
   theme: string;
 }) => {
   const x = side === "left" ? -2.5 : 2.5;
-  const baseColor = theme === "light" ? "#cbd5e1" : "#353848";
-  const topColor = theme === "light" ? "#94a3b8" : "#3e4258";
+  // Prosecution (left) = navy blue felt; Defense (right) = burgundy felt
+  const feltColor = side === "left" ? "#1b3a5c" : "#5c1a2a";
+  const woodColor = theme === "light" ? "#4a2008" : "#5c2a0e";
+  const woodDark = theme === "light" ? "#2e1204" : "#3d1c06";
+  const brassColor = "#b8860b";
 
   return (
     <group position={[x, 0, -1]}>
-      <mesh position={[0, 0.35, 0]}>
-        <boxGeometry args={[2, 0.7, 1]} />
-        <meshStandardMaterial color={baseColor} roughness={0.4} />
+      {/* Table legs */}
+      {[[-0.85, -0.45], [-0.85, 0.45], [0.85, -0.45], [0.85, 0.45]].map(([lx, lz], i) => (
+        <mesh key={i} position={[lx, 0.2, lz]}>
+          <boxGeometry args={[0.06, 0.7, 0.06]} />
+          <meshStandardMaterial color={woodDark} roughness={0.5} />
+        </mesh>
+      ))}
+      {/* Apron rail front */}
+      <mesh position={[0, 0.52, 0.48]}>
+        <boxGeometry args={[1.7, 0.08, 0.04]} />
+        <meshStandardMaterial color={woodColor} roughness={0.5} />
       </mesh>
-      <mesh position={[0, 0.72, 0]}>
-        <boxGeometry args={[2.1, 0.06, 1.1]} />
-        <meshStandardMaterial color={topColor} roughness={0.4} />
+      {/* Tabletop - mahogany */}
+      <mesh position={[0, 0.57, 0]}>
+        <boxGeometry args={[1.9, 0.06, 0.98]} />
+        <meshStandardMaterial color={woodColor} roughness={0.4} />
+      </mesh>
+      {/* Felt surface on table */}
+      <mesh position={[0, 0.605, 0]}>
+        <boxGeometry args={[1.75, 0.01, 0.82]} />
+        <meshStandardMaterial color={feltColor} roughness={0.9} />
+      </mesh>
+      {/* Brass edge trim */}
+      <mesh position={[0, 0.58, 0.5]}>
+        <boxGeometry args={[1.9, 0.03, 0.03]} />
+        <meshStandardMaterial color={brassColor} metalness={0.8} roughness={0.2} />
+      </mesh>
+      {/* Small nameplate */}
+      <mesh position={[0, 0.62, 0.42]}>
+        <boxGeometry args={[0.5, 0.04, 0.12]} />
+        <meshStandardMaterial color={brassColor} metalness={0.9} roughness={0.1} />
       </mesh>
     </group>
   );
 };
 
 const WitnessStand = ({ theme }: { theme: string }) => {
-  const baseColor = theme === "light" ? "#f1f5f9" : "#3a3e4e";
-  const topColor = theme === "light" ? "#e2e8f0" : "#464b5e";
+  const woodColor = theme === "light" ? "#4a2008" : "#5c2a0e";
+  const woodDark = theme === "light" ? "#2e1204" : "#3d1c06";
+  const feltColor = "#1a4731";
+  const brassColor = "#b8860b";
 
   return (
     <group position={[3.5, 0, -3]}>
-      <mesh position={[0, 0.3, 0]}>
-        <boxGeometry args={[1.2, 0.6, 1.2]} />
-        <meshStandardMaterial color={baseColor} roughness={0.4} />
+      {/* Base platform */}
+      <mesh position={[0, 0.15, 0]}>
+        <boxGeometry args={[1.4, 0.3, 1.4]} />
+        <meshStandardMaterial color={woodDark} roughness={0.5} />
       </mesh>
-      <mesh position={[0, 0.65, 0]}>
-        <boxGeometry args={[1.3, 0.06, 1.3]} />
-        <meshStandardMaterial color={topColor} roughness={0.4} />
+      {/* Main body */}
+      <mesh position={[0, 0.5, 0]}>
+        <boxGeometry args={[1.2, 0.5, 1.2]} />
+        <meshStandardMaterial color={woodColor} roughness={0.5} />
       </mesh>
+      {/* Top surface - green felt */}
+      <mesh position={[0, 0.78, 0]}>
+        <boxGeometry args={[1.25, 0.06, 1.25]} />
+        <meshStandardMaterial color={woodColor} roughness={0.4} />
+      </mesh>
+      <mesh position={[0, 0.82, 0]}>
+        <boxGeometry args={[1.1, 0.01, 1.1]} />
+        <meshStandardMaterial color={feltColor} roughness={0.9} />
+      </mesh>
+      {/* Brass corner accents */}
+      {[[-0.55, -0.55], [-0.55, 0.55], [0.55, -0.55], [0.55, 0.55]].map(([cx, cz], i) => (
+        <mesh key={i} position={[cx, 0.82, cz]}>
+          <cylinderGeometry args={[0.04, 0.04, 0.12, 6]} />
+          <meshStandardMaterial color={brassColor} metalness={0.85} roughness={0.15} />
+        </mesh>
+      ))}
+      {/* "WITNESS" label text would go here */}
     </group>
   );
 };
 
 const EvidenceScreen = ({ theme }: { theme: string }) => {
-  const frameColor = theme === "light" ? "#e2e8f0" : "#2e3242";
+  const frameColor = "#1a1a2a";
   const screenColor = theme === "light" ? "#ffffff" : "#282c3c";
   const emissiveColor = theme === "light" ? "#f8fafc" : "#353a50";
+  const brassColor = "#b8860b";
 
   return (
     <group position={[0, 2.5, -5.5]}>
-      {/* Frame */}
+      {/* Outer brass border */}
       <mesh>
-        <boxGeometry args={[4, 2.5, 0.1]} />
+        <boxGeometry args={[4.3, 2.8, 0.08]} />
+        <meshStandardMaterial color={brassColor} metalness={0.7} roughness={0.3} />
+      </mesh>
+      {/* Inner dark frame */}
+      <mesh position={[0, 0, 0.04]}>
+        <boxGeometry args={[4, 2.5, 0.06]} />
         <meshStandardMaterial color={frameColor} roughness={0.2} />
       </mesh>
       {/* Screen surface */}
-      <mesh position={[0, 0, 0.06]}>
+      <mesh position={[0, 0, 0.08]}>
         <planeGeometry args={[3.6, 2.1]} />
         <meshStandardMaterial
           color={screenColor}
           emissive={emissiveColor}
-          emissiveIntensity={0.3}
+          emissiveIntensity={0.4}
         />
       </mesh>
       {/* "EXHIBIT A" text */}
       <Text
-        position={[0, 0.3, 0.08]}
+        position={[0, 0.3, 0.12]}
         fontSize={0.25}
         color="#d4a542"
         anchorX="center"
@@ -179,7 +264,7 @@ const EvidenceScreen = ({ theme }: { theme: string }) => {
         EXHIBIT A
       </Text>
       <Text
-        position={[0, -0.2, 0.08]}
+        position={[0, -0.2, 0.12]}
         fontSize={0.12}
         color={theme === "light" ? "#475569" : "#8899aa"}
         anchorX="center"
@@ -187,57 +272,108 @@ const EvidenceScreen = ({ theme }: { theme: string }) => {
       >
         Contract_Agreement_2025.pdf
       </Text>
-    </group>
-  );
-};
-
-const Gallery = ({ theme }: { theme: string }) => {
-  const benchColor = theme === "light" ? "#cbd5e1" : "#323546";
-  return (
-    <group position={[0, 0, 3]}>
-      {[0, 1, 2].map((row) => (
-        <mesh key={row} position={[0, 0.15 + row * 0.35, row * 1.2]}>
-          <boxGeometry args={[6, 0.3, 0.6]} />
-          <meshStandardMaterial color={benchColor} roughness={0.5} />
+      {/* Screen corner screws */}
+      {[[-1.95, 1.3], [1.95, 1.3], [-1.95, -1.3], [1.95, -1.3]].map(([sx, sy], i) => (
+        <mesh key={i} position={[sx, sy, 0.05]}>
+          <cylinderGeometry args={[0.05, 0.05, 0.04, 8]} rotation={[Math.PI / 2, 0, 0]} />
+          <meshStandardMaterial color={brassColor} metalness={0.9} roughness={0.1} />
         </mesh>
       ))}
     </group>
   );
 };
 
-const Floor = ({ theme }: { theme: string }) => {
-  const floorColor = theme === "light" ? "#e2e8f0" : "#2a2e3e";
+const Gallery = ({ theme }: { theme: string }) => {
+  // Traditional courtroom pew wood
+  const pewColor = theme === "light" ? "#4a2008" : "#5c2a0e";
+  const pewDark = theme === "light" ? "#2e1204" : "#3d1c06";
   return (
-    <mesh
-      rotation={[-Math.PI / 2, 0, 0]}
-      position={[0, -0.01, 0]}
-      receiveShadow
-    >
-      <planeGeometry args={[20, 20]} />
-      <meshStandardMaterial color={floorColor} roughness={0.8} />
-    </mesh>
+    <group position={[0, 0, 3]}>
+      {[0, 1, 2].map((row) => (
+        <group key={row} position={[0, row * 0.35, row * 1.2]}>
+          {/* Pew seat */}
+          <mesh position={[0, 0.25, 0]}>
+            <boxGeometry args={[6.2, 0.08, 0.55]} />
+            <meshStandardMaterial color={pewColor} roughness={0.5} />
+          </mesh>
+          {/* Pew back rest */}
+          <mesh position={[0, 0.52, -0.22]}>
+            <boxGeometry args={[6.2, 0.45, 0.06]} />
+            <meshStandardMaterial color={pewColor} roughness={0.5} />
+          </mesh>
+          {/* Pew base */}
+          <mesh position={[0, 0.1, 0]}>
+            <boxGeometry args={[6.2, 0.2, 0.6]} />
+            <meshStandardMaterial color={pewDark} roughness={0.6} />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+};
+
+const Floor = ({ theme }: { theme: string }) => {
+  // Marble-style floor
+  const floorColor = theme === "light" ? "#c8bfa8" : "#6e6355";
+  const floorColor2 = theme === "light" ? "#b5aa94" : "#5e5448";
+  return (
+    <group>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
+        <planeGeometry args={[20, 20]} />
+        <meshStandardMaterial color={floorColor} roughness={0.3} metalness={0.05} />
+      </mesh>
+      {/* Marble tile grid lines */}
+      {[-6, -3, 0, 3, 6].map((x) =>
+        [-6, -3, 0, 3, 6].map((z) => (
+          <mesh key={`${x}-${z}`} rotation={[-Math.PI / 2, 0, 0]} position={[x, 0, z]}>
+            <planeGeometry args={[2.98, 2.98]} />
+            <meshStandardMaterial color={x % 2 === z % 2 ? floorColor : floorColor2} roughness={0.25} metalness={0.05} />
+          </mesh>
+        ))
+      )}
+    </group>
   );
 };
 
 const Walls = ({ theme }: { theme: string }) => {
-  const backWallColor = theme === "light" ? "#f8fafc" : "#323546";
-  const sideWallColor = theme === "light" ? "#f1f5f9" : "#2e3142";
+  // Warm court beige/cream walls with wainscoting
+  const wallColor = theme === "light" ? "#e8dcc8" : "#4a4235";
+  const wainscotColor = theme === "light" ? "#5c2d0a" : "#6b3510";
 
   return (
     <group>
       {/* Back wall */}
       <mesh position={[0, 3, -6]}>
         <planeGeometry args={[20, 6]} />
-        <meshStandardMaterial color={backWallColor} roughness={0.7} />
+        <meshStandardMaterial color={wallColor} roughness={0.7} />
+      </mesh>
+      {/* Wainscoting panels - back wall */}
+      <mesh position={[0, 0.6, -5.95]}>
+        <boxGeometry args={[18, 1.2, 0.05]} />
+        <meshStandardMaterial color={wainscotColor} roughness={0.5} />
       </mesh>
       {/* Side walls */}
       <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}>
         <planeGeometry args={[14, 6]} />
-        <meshStandardMaterial color={sideWallColor} roughness={0.7} />
+        <meshStandardMaterial color={wallColor} roughness={0.7} />
       </mesh>
       <mesh position={[8, 3, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <planeGeometry args={[14, 6]} />
-        <meshStandardMaterial color={sideWallColor} roughness={0.7} />
+        <meshStandardMaterial color={wallColor} roughness={0.7} />
+      </mesh>
+      {/* Wainscoting - side walls */}
+      <mesh position={[-7.95, 0.6, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <boxGeometry args={[12, 1.2, 0.05]} />
+        <meshStandardMaterial color={wainscotColor} roughness={0.5} />
+      </mesh>
+      <mesh position={[7.95, 0.6, 0]} rotation={[0, -Math.PI / 2, 0]}>
+        <boxGeometry args={[12, 1.2, 0.05]} />
+        <meshStandardMaterial color={wainscotColor} roughness={0.5} />
+      </mesh>
+      {/* Crown molding - back wall */}
+      <mesh position={[0, 5.9, -5.9]}>
+        <boxGeometry args={[18, 0.15, 0.12]} />
+        <meshStandardMaterial color="#b8860b" metalness={0.6} roughness={0.3} />
       </mesh>
     </group>
   );
