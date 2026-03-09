@@ -103,85 +103,97 @@ const JudgeBench = ({ theme }: { theme: string }) => {
   const feltColor = "#1a4731";
   const brassColor = "#b8860b";
   const marbleColor = theme === "light" ? "#d4c8b0" : "#8a7d6a";
+  const marbleColor2 = theme === "light" ? "#bfb49c" : "#7d7060";
 
   return (
     <group position={[0, 0, -4]}>
-      {/* Single low platform */}
-      <mesh position={[0, 0.1, 0.2]}>
-        <boxGeometry args={[4.5, 0.2, 2.8]} />
+      {/* STEP 1 - bottom wide base */}
+      <mesh position={[0, 0.15, 0.2]}>
+        <boxGeometry args={[5.0, 0.3, 3.2]} />
         <meshStandardMaterial color={marbleColor} roughness={0.2} metalness={0.05} />
       </mesh>
+      {/* STEP 2 - upper narrower platform */}
+      <mesh position={[0, 0.45, 0.1]}>
+        <boxGeometry args={[4.6, 0.3, 2.8]} />
+        <meshStandardMaterial color={marbleColor2} roughness={0.2} metalness={0.05} />
+      </mesh>
 
-      {/* C-SHAPE BENCH: Left wing */}
-      <mesh position={[-1.6, 0.65, 0]}>
-        <boxGeometry args={[1.0, 0.9, 1.6]} />
+      {/* C-SHAPE BENCH opening toward BACK WALL (wings extend toward audience) */}
+      {/* Left wing - extends toward front/audience */}
+      <mesh position={[-1.6, 1.15, 0.3]}>
+        <boxGeometry args={[1.0, 0.9, 1.8]} />
         <meshStandardMaterial color={woodColor} roughness={0.5} />
       </mesh>
       {/* Left wing felt top */}
-      <mesh position={[-1.6, 1.11, 0]}>
-        <boxGeometry args={[1.05, 0.02, 1.65]} />
+      <mesh position={[-1.6, 1.61, 0.3]}>
+        <boxGeometry args={[1.05, 0.02, 1.85]} />
         <meshStandardMaterial color={feltColor} roughness={0.9} />
       </mesh>
 
-      {/* C-SHAPE BENCH: Right wing */}
-      <mesh position={[1.6, 0.65, 0]}>
-        <boxGeometry args={[1.0, 0.9, 1.6]} />
+      {/* Right wing - extends toward front/audience */}
+      <mesh position={[1.6, 1.15, 0.3]}>
+        <boxGeometry args={[1.0, 0.9, 1.8]} />
         <meshStandardMaterial color={woodColor} roughness={0.5} />
       </mesh>
       {/* Right wing felt top */}
-      <mesh position={[1.6, 1.11, 0]}>
-        <boxGeometry args={[1.05, 0.02, 1.65]} />
+      <mesh position={[1.6, 1.61, 0.3]}>
+        <boxGeometry args={[1.05, 0.02, 1.85]} />
         <meshStandardMaterial color={feltColor} roughness={0.9} />
       </mesh>
 
-      {/* C-SHAPE BENCH: Back connector (lower, behind judge) */}
-      <mesh position={[0, 0.55, -0.7]}>
+      {/* Front connector (faces audience, closes the C toward audience side) */}
+      <mesh position={[0, 1.05, 1.1]}>
         <boxGeometry args={[4.2, 0.7, 0.5]} />
         <meshStandardMaterial color={woodColor} roughness={0.5} />
       </mesh>
-      {/* Back connector felt top */}
-      <mesh position={[0, 0.91, -0.7]}>
+      {/* Front connector felt top */}
+      <mesh position={[0, 1.41, 1.1]}>
         <boxGeometry args={[4.25, 0.02, 0.55]} />
         <meshStandardMaterial color={feltColor} roughness={0.9} />
       </mesh>
 
-      {/* Front panel detail on left wing */}
-      <mesh position={[-1.6, 0.55, 0.81]}>
+      {/* Front panel detail on left wing (audience-facing) */}
+      <mesh position={[-1.6, 1.05, 1.21]}>
         <boxGeometry args={[0.95, 0.5, 0.04]} />
         <meshStandardMaterial color={woodDark} roughness={0.6} />
       </mesh>
-      {/* Front panel detail on right wing */}
-      <mesh position={[1.6, 0.55, 0.81]}>
+      {/* Front panel detail on right wing (audience-facing) */}
+      <mesh position={[1.6, 1.05, 1.21]}>
         <boxGeometry args={[0.95, 0.5, 0.04]} />
+        <meshStandardMaterial color={woodDark} roughness={0.6} />
+      </mesh>
+      {/* Front panel on connector */}
+      <mesh position={[0, 0.95, 1.36]}>
+        <boxGeometry args={[2.1, 0.4, 0.04]} />
         <meshStandardMaterial color={woodDark} roughness={0.6} />
       </mesh>
 
-      {/* Brass trim - left wing front */}
-      <mesh position={[-1.6, 1.1, 0.82]}>
-        <boxGeometry args={[1.05, 0.05, 0.03]} />
-        <meshStandardMaterial color={brassColor} metalness={0.85} roughness={0.15} />
-      </mesh>
-      {/* Brass trim - right wing front */}
-      <mesh position={[1.6, 1.1, 0.82]}>
-        <boxGeometry args={[1.05, 0.05, 0.03]} />
-        <meshStandardMaterial color={brassColor} metalness={0.85} roughness={0.15} />
-      </mesh>
-      {/* Brass trim - back */}
-      <mesh position={[0, 0.9, -0.94]}>
+      {/* Brass trim - front connector */}
+      <mesh position={[0, 1.4, 1.36]}>
         <boxGeometry args={[4.25, 0.05, 0.03]} />
+        <meshStandardMaterial color={brassColor} metalness={0.85} roughness={0.15} />
+      </mesh>
+      {/* Brass trim - left wing front edge */}
+      <mesh position={[-1.6, 1.6, 1.21]}>
+        <boxGeometry args={[1.05, 0.05, 0.03]} />
+        <meshStandardMaterial color={brassColor} metalness={0.85} roughness={0.15} />
+      </mesh>
+      {/* Brass trim - right wing front edge */}
+      <mesh position={[1.6, 1.6, 1.21]}>
+        <boxGeometry args={[1.05, 0.05, 0.03]} />
         <meshStandardMaterial color={brassColor} metalness={0.85} roughness={0.15} />
       </mesh>
 
       {/* Brass corner posts */}
-      {[[-2.1, 0.82], [2.1, 0.82], [-2.1, -0.94], [2.1, -0.94]].map(([x, z], i) => (
-        <mesh key={i} position={[x, 0.8, z]}>
-          <cylinderGeometry args={[0.04, 0.04, 0.6, 8]} />
+      {[[-2.1, 1.21], [2.1, 1.21], [-2.1, -0.6], [2.1, -0.6]].map(([x, z], i) => (
+        <mesh key={i} position={[x, 1.3, z]}>
+          <cylinderGeometry args={[0.04, 0.04, 0.7, 8]} />
           <meshStandardMaterial color={brassColor} metalness={0.85} roughness={0.15} />
         </mesh>
       ))}
 
       {/* Gavel block on right wing */}
-      <mesh position={[1.6, 1.14, 0]}>
+      <mesh position={[1.6, 1.64, 0.3]}>
         <boxGeometry args={[0.2, 0.05, 0.15]} />
         <meshStandardMaterial color={woodDark} roughness={0.4} />
       </mesh>
@@ -465,9 +477,9 @@ const CourtroomScene = () => {
       rot: [number, number, number];
     }[] = [];
     
-    // Judge sitting inside C-shape bench, on the platform (y=0.2 for platform height)
+    // Judge on top of two-step platform (0.3+0.3=0.6), inside C-shape opening toward back
     const judge = participants.find((p) => p.role === "judge");
-    if (judge) positions.push({ participant: judge, pos: [0, 0.2, -3.8], rot: [0, 0, 0] });
+    if (judge) positions.push({ participant: judge, pos: [0, 0.6, -4.2], rot: [0, 0, 0] });
 
     const prosLawyers = participants.filter(
       (p) => p.role === "lawyer" && p.side === "prosecution",
