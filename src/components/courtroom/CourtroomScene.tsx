@@ -675,6 +675,7 @@ const CourtroomScene = () => {
         <Floor theme={currentTheme} />
         <Walls theme={currentTheme} />
         <JudgeBench theme={currentTheme} />
+        <Gavel position={[1.2, 1.02, -4]} />
         <LawyerTable side="left" theme={currentTheme} />
         <LawyerTable side="right" theme={currentTheme} />
         <WitnessStand theme={currentTheme} />
