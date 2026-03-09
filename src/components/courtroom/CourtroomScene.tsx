@@ -102,8 +102,8 @@ const JudgeBench = ({ theme }: { theme: string }) => {
   const woodDark = theme === "light" ? "#3d1c06" : "#4a2208";
   const feltColor = "#1a4731";
   const brassColor = "#b8860b";
-  const marbleColor = theme === "light" ? "#d4c8b0" : "#8a7d6a";
-  const marbleColor2 = theme === "light" ? "#bfb49c" : "#7d7060";
+  const marbleColor = theme === "light" ? "#c0c4cc" : "#8a7d6a";
+  const marbleColor2 = theme === "light" ? "#b0b4bc" : "#7d7060";
 
   return (
     <group position={[0, 0, -4]}>
@@ -380,8 +380,8 @@ const Gallery = ({ theme }: { theme: string }) => {
 
 const Floor = ({ theme }: { theme: string }) => {
   // Marble-style floor
-  const floorColor = theme === "light" ? "#c8bfa8" : "#6e6355";
-  const floorColor2 = theme === "light" ? "#b5aa94" : "#5e5448";
+  const floorColor = theme === "light" ? "#b8bcc6" : "#6e6355";
+  const floorColor2 = theme === "light" ? "#a8acb6" : "#5e5448";
   return (
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
@@ -403,7 +403,7 @@ const Floor = ({ theme }: { theme: string }) => {
 
 const Walls = ({ theme }: { theme: string }) => {
   // Warm court beige/cream walls with wainscoting
-  const wallColor = theme === "light" ? "#e8dcc8" : "#4a4235";
+  const wallColor = theme === "light" ? "#d0d4da" : "#4a4235";
   const wainscotColor = theme === "light" ? "#5c2d0a" : "#6b3510";
 
   return (
