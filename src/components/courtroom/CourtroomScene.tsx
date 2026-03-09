@@ -259,8 +259,13 @@ const BrandText = () => (
 const CourtroomScene = () => {
   const { participants } = useCourtroomContext();
 
-  const { theme: activeTheme, systemTheme } = useTheme() as any;
-  const currentTheme = activeTheme === "system" ? systemTheme : activeTheme;
+  const { theme } = useTheme();
+  const currentTheme = (() => {
+    if (theme === "system") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    return theme;
+  })();
 
   // Position avatars by role
   const avatarPositions = useMemo(() => {
