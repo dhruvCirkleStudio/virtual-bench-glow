@@ -255,7 +255,7 @@ const LawyerTable = ({
 const WitnessStand = ({ theme }: { theme: string }) => {
   const woodColor = theme === "light" ? "#8b6914" : "#5c2a0e";
   const woodDark = theme === "light" ? "#6b4c10" : "#3d1c06";
-  const feltColor = theme === "light" ? "#2a6b4a" : "#1a4731";
+  const feltColor = theme === "light" ? "#8b4513" : "#1a4731";
   const brassColor = "#b8860b";
 
   return (
