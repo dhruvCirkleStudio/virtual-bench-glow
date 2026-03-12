@@ -98,9 +98,9 @@ const Avatar3D = ({
 
 // Courtroom furniture
 const JudgeBench = ({ theme }: { theme: string }) => {
-  const woodColor = theme === "light" ? "#8b6914" : "#6b3510";
-  const woodDark = theme === "light" ? "#6b4c10" : "#4a2208";
-  const feltColor = theme === "light" ? "#2a6b4a" : "#1a4731";
+  const woodColor = theme === "light" ? "#5c3d2e" : "#6b3510";
+  const woodDark = theme === "light" ? "#3e2a1e" : "#4a2208";
+  const feltColor = theme === "light" ? "#2c3e6b" : "#1a2d4a";
   const brassColor = "#d4a030";
   const marbleColor = theme === "light" ? "#dce0e6" : "#8a7d6a";
   const marbleColor2 = theme === "light" ? "#cdd1d8" : "#7d7060";
