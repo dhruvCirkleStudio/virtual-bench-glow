@@ -209,14 +209,13 @@ const LawyerTable = ({
   theme: string;
 }) => {
   const x = side === "left" ? -2.5 : 2.5;
-  // Prosecution (left) = navy blue felt; Defense (right) = burgundy felt
-  const feltColor = side === "left" ? "#2a5580" : "#802a3a";
-  const woodColor = theme === "light" ? "#8b6914" : "#5c2a0e";
-  const woodDark = theme === "light" ? "#6b4c10" : "#3d1c06";
+  const feltColor = theme === "light" ? "#4a3728" : "#6b4c10";
+  const woodColor = theme === "light" ? "#a07840" : "#5c2a0e";
+  const woodDark = theme === "light" ? "#7a5c30" : "#3d1c06";
   const brassColor = "#b8860b";
 
   return (
-    <group position={[x, 0, -1]}>
+    <group position={[x, 0, 0]}>
       {/* Table legs */}
       {[[-0.85, -0.45], [-0.85, 0.45], [0.85, -0.45], [0.85, 0.45]].map(([lx, lz], i) => (
         <mesh key={i} position={[lx, 0.2, lz]}>
