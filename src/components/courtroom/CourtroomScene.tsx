@@ -489,10 +489,10 @@ const CourtroomScene = () => {
     
     // Lawyers look towards judge (rot Y=PI)
     prosLawyers.forEach((p, i) =>
-      positions.push({ participant: p, pos: [-2.5 + i * 0.8, 0, -0.3], rot: [0, Math.PI, 0] }),
+      positions.push({ participant: p, pos: [-2.5 + i * 0.8, 0, 0.7], rot: [0, Math.PI, 0] }),
     );
     defLawyers.forEach((p, i) =>
-      positions.push({ participant: p, pos: [2.5 - i * 0.8, 0, -0.3], rot: [0, Math.PI, 0] }),
+      positions.push({ participant: p, pos: [2.5 - i * 0.8, 0, 0.7], rot: [0, Math.PI, 0] }),
     );
 
     const prosLitigants = participants.filter(
