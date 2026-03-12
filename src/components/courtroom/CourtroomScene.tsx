@@ -504,10 +504,10 @@ const CourtroomScene = () => {
     
     // Litigants also face judge
     prosLitigants.forEach((p, i) =>
-      positions.push({ participant: p, pos: [-3.5 - i * 0.8, 0, -0.3], rot: [0, Math.PI, 0] }),
+      positions.push({ participant: p, pos: [-3.5 - i * 0.8, 0, 0.7], rot: [0, Math.PI, 0] }),
     );
     defLitigants.forEach((p, i) =>
-      positions.push({ participant: p, pos: [3.5 + i * 0.8, 0, -0.3], rot: [0, Math.PI, 0] }),
+      positions.push({ participant: p, pos: [3.5 + i * 0.8, 0, 0.7], rot: [0, Math.PI, 0] }),
     );
 
     const observers = participants.filter((p) => p.role === "observer");
