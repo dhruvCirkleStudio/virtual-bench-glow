@@ -98,9 +98,9 @@ const Avatar3D = ({
 
 // Courtroom furniture
 const JudgeBench = ({ theme }: { theme: string }) => {
-  const woodColor = theme === "light" ? "#8b6914" : "#6b3510";
-  const woodDark = theme === "light" ? "#6b4c10" : "#4a2208";
-  const feltColor = theme === "light" ? "#2a6b4a" : "#1a4731";
+  const woodColor = theme === "light" ? "#5c3d2e" : "#6b3510";
+  const woodDark = theme === "light" ? "#3e2a1e" : "#4a2208";
+  const feltColor = theme === "light" ? "#2c3e6b" : "#1a2d4a";
   const brassColor = "#d4a030";
   const marbleColor = theme === "light" ? "#dce0e6" : "#8a7d6a";
   const marbleColor2 = theme === "light" ? "#cdd1d8" : "#7d7060";
@@ -209,14 +209,13 @@ const LawyerTable = ({
   theme: string;
 }) => {
   const x = side === "left" ? -2.5 : 2.5;
-  // Prosecution (left) = navy blue felt; Defense (right) = burgundy felt
-  const feltColor = side === "left" ? "#2a5580" : "#802a3a";
-  const woodColor = theme === "light" ? "#8b6914" : "#5c2a0e";
-  const woodDark = theme === "light" ? "#6b4c10" : "#3d1c06";
+  const feltColor = theme === "light" ? "#4a3728" : "#6b4c10";
+  const woodColor = theme === "light" ? "#a07840" : "#5c2a0e";
+  const woodDark = theme === "light" ? "#7a5c30" : "#3d1c06";
   const brassColor = "#b8860b";
 
   return (
-    <group position={[x, 0, -1]}>
+    <group position={[x, 0, 0]}>
       {/* Table legs */}
       {[[-0.85, -0.45], [-0.85, 0.45], [0.85, -0.45], [0.85, 0.45]].map(([lx, lz], i) => (
         <mesh key={i} position={[lx, 0.2, lz]}>
@@ -490,10 +489,10 @@ const CourtroomScene = () => {
     
     // Lawyers look towards judge (rot Y=PI)
     prosLawyers.forEach((p, i) =>
-      positions.push({ participant: p, pos: [-2.5 + i * 0.8, 0, -0.3], rot: [0, Math.PI, 0] }),
+      positions.push({ participant: p, pos: [-2.5 + i * 0.8, 0, 0.7], rot: [0, Math.PI, 0] }),
     );
     defLawyers.forEach((p, i) =>
-      positions.push({ participant: p, pos: [2.5 - i * 0.8, 0, -0.3], rot: [0, Math.PI, 0] }),
+      positions.push({ participant: p, pos: [2.5 - i * 0.8, 0, 0.7], rot: [0, Math.PI, 0] }),
     );
 
     const prosLitigants = participants.filter(
@@ -505,10 +504,10 @@ const CourtroomScene = () => {
     
     // Litigants also face judge
     prosLitigants.forEach((p, i) =>
-      positions.push({ participant: p, pos: [-3.5 - i * 0.8, 0, -0.3], rot: [0, Math.PI, 0] }),
+      positions.push({ participant: p, pos: [-3.5 - i * 0.8, 0, 0.7], rot: [0, Math.PI, 0] }),
     );
     defLitigants.forEach((p, i) =>
-      positions.push({ participant: p, pos: [3.5 + i * 0.8, 0, -0.3], rot: [0, Math.PI, 0] }),
+      positions.push({ participant: p, pos: [3.5 + i * 0.8, 0, 0.7], rot: [0, Math.PI, 0] }),
     );
 
     const observers = participants.filter((p) => p.role === "observer");
