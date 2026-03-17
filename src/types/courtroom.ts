@@ -33,10 +33,10 @@ export interface EvidenceItem {
 }
 
 export const ROLE_COLORS: Record<Role, string> = {
-  judge: 'hsl(43, 80%, 55%)',
-  lawyer: 'hsl(220, 60%, 55%)',
-  litigant: 'hsl(210, 20%, 85%)',
-  observer: 'hsl(215, 15%, 55%)',
+  judge: '#d4a542',
+  lawyer: '#4a7fd4',
+  litigant: '#c4c9d4',
+  observer: '#777d88',
 };
 
 export const ROLE_LABELS: Record<Role, string> = {

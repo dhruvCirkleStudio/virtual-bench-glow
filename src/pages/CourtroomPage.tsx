@@ -11,9 +11,12 @@ import { Role } from '@/types/courtroom';
 const CourtroomPage = () => {
   const [searchParams] = useSearchParams();
   const role = (searchParams.get('role') as Role) || 'observer';
+  const caseId = searchParams.get('caseId') || 'LB-2026-4521';
+  const side = searchParams.get('side') || (role === 'judge' ? undefined : 'prosecution');
+  const userName = searchParams.get('userName') || '';
 
   return (
-    <CourtroomProvider role={role}>
+    <CourtroomProvider role={role} caseId={caseId} side={side as any} userName={userName}>
       <div className="h-screen w-screen overflow-hidden bg-background relative">
         <TopBar />
         <CourtroomScene />

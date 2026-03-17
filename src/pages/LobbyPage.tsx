@@ -16,11 +16,14 @@ const roleDescriptions: Record<Role, string> = {
 
 const LobbyPage = () => {
   const [selectedRole, setSelectedRole] = useState<Role>("judge");
+  const [selectedSide, setSelectedSide] = useState<"prosecution" | "defense">("prosecution");
+  const [userName, setUserName] = useState("");
   const [caseId, setCaseId] = useState("LB-2026-4521");
   const navigate = useNavigate();
 
   const handleEnter = () => {
-    navigate(`/courtroom?role=${selectedRole}`);
+    const finalName = userName || (selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1) + " " + Math.floor(Math.random() * 100));
+    navigate(`/courtroom?role=${selectedRole}&caseId=${caseId}&side=${selectedSide}&userName=${encodeURIComponent(finalName)}`);
   };
 
   return (
@@ -48,6 +51,18 @@ const LobbyPage = () => {
 
         {/* Card */}
         <div className="glass-panel-strong rounded-2xl p-6 space-y-6">
+          <div>
+            <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+              Your Name
+            </label>
+            <input
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              className="w-full bg-muted/40 rounded-xl px-4 py-3 text-foreground font-semibold text-sm border border-border/50 focus:border-primary/50 outline-none transition-colors"
+              placeholder="Enter your name"
+            />
+          </div>
+
           <div>
             <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
               Case ID
@@ -87,6 +102,33 @@ const LobbyPage = () => {
               ))}
             </div>
           </div>
+
+          {(selectedRole === "lawyer" || selectedRole === "litigant") && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="space-y-3"
+            >
+              <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Select Side
+              </label>
+              <div className="flex gap-2">
+                {["prosecution", "defense"].map((side) => (
+                  <button
+                    key={side}
+                    onClick={() => setSelectedSide(side as any)}
+                    className={`flex-1 py-2 px-3 rounded-xl border text-sm font-semibold transition-all ${
+                      selectedSide === side
+                        ? "border-primary/50 bg-primary/10 text-primary"
+                        : "border-border/40 bg-muted/20 text-muted-foreground hover:bg-muted/40"
+                    }`}
+                  >
+                    {side.charAt(0).toUpperCase() + side.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
           <button
             onClick={handleEnter}

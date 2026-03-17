@@ -16,7 +16,7 @@ const ParticipantRow = ({ participant }: { participant: Participant }) => {
       <div className="relative">
         <div
           className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold"
-          style={{ backgroundColor: roleColor + '22', color: roleColor }}
+          style={{ backgroundColor: participant.avatarColor + '22', color: participant.avatarColor }}
         >
           {participant.name.charAt(0)}
         </div>
@@ -29,7 +29,7 @@ const ParticipantRow = ({ participant }: { participant: Participant }) => {
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-foreground truncate">{participant.name}</p>
         <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: roleColor }}>
-          {ROLE_LABELS[participant.role]}
+          {ROLE_LABELS[participant.role]} {participant.side && `• ${participant.side}`}
         </span>
       </div>
 
