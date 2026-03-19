@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect } from "react";
+import { useRef, useMemo, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -19,13 +19,40 @@ const VideoScreen = ({
   stream: MediaStream;
   position: [number, number, number];
 }) => {
-  const video = useMemo(() => {
+  const [video, setVideo] = useState<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    if (!stream) return;
+
     const v = document.createElement("video");
     v.srcObject = stream;
-    v.muted = true; // Mute local preview and avoid feedback
-    v.play().catch((e) => console.error("Video play failed:", e));
-    return v;
+    v.muted = true;
+    v.autoplay = true;
+    v.playsInline = true;
+    
+    // Crucial for Three.js VideoTexture: ensure metadata is loaded
+    v.onloadedmetadata = () => {
+      v.play().catch((e) => console.error("[VideoScreen] Play failed:", e));
+    };
+
+    // If tracks are added later, re-attempt play
+    const handleAddTrack = () => {
+      console.log("[VideoScreen] Track added to stream");
+      v.play().catch(() => {});
+    };
+
+    stream.addEventListener("addtrack", handleAddTrack);
+    setVideo(v);
+
+    return () => {
+      stream.removeEventListener("addtrack", handleAddTrack);
+      v.pause();
+      v.srcObject = null;
+      v.load();
+    };
   }, [stream]);
+
+  if (!video) return null;
 
   return (
     <mesh position={position}>
@@ -56,14 +83,21 @@ const Avatar3D = ({
 }) => {
   const groupRef = useRef<THREE.Group>(null);
   const glowRef = useRef<THREE.Mesh>(null);
+  const micGlowRef = useRef<THREE.Mesh>(null);
   const roleColor = ROLE_COLORS[participant.role];
   const isLawyer = participant.role === "lawyer";
+  const isMicActive = !participant.isMuted;
 
   useFrame((state) => {
     if (glowRef.current && participant.isSpeaking) {
       glowRef.current.scale.setScalar(
         1 + Math.sin(state.clock.elapsedTime * 5) * 0.1,
       );
+    }
+    // Gentle pulse for mic-on glow ring
+    if (micGlowRef.current && isMicActive) {
+      const pulse = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.08;
+      micGlowRef.current.scale.setScalar(pulse);
     }
   });
 
@@ -84,6 +118,29 @@ const Avatar3D = ({
           <meshBasicMaterial color={roleColor} transparent opacity={0.4} />
         </mesh>
       )}
+
+      {/* Mic-on glow ring at avatar base */}
+      {isMicActive && (
+        <mesh
+          ref={micGlowRef}
+          position={[0, 0.02, 0]}
+          rotation={[-Math.PI / 2, 0, 0]}
+        >
+          <ringGeometry args={[0.3, 0.45, 48]} />
+          <meshBasicMaterial color="#4ade80" transparent opacity={0.35} />
+        </mesh>
+      )}
+      {/* Mic-on soft ground disc */}
+      {isMicActive && (
+        <mesh
+          position={[0, 0.01, 0]}
+          rotation={[-Math.PI / 2, 0, 0]}
+        >
+          <circleGeometry args={[0.35, 48]} />
+          <meshBasicMaterial color="#4ade80" transparent opacity={0.1} />
+        </mesh>
+      )}
+
       {/* Body */}
       <mesh position={[0, 0.5, 0]}>
         <cylinderGeometry args={[0.2, 0.25, 0.8, 8]} />

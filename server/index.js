@@ -138,6 +138,15 @@ io.on("connection", (socket) => {
       .emit("camera_status_changed", { participantId, hasCamera });
   });
 
+  socket.on("mic_toggle", ({ caseId, participantId, hasMic }) => {
+    if (participants[socket.id]) {
+      participants[socket.id].hasMic = hasMic;
+    }
+    socket
+      .to(caseId)
+      .emit("mic_status_changed", { participantId, hasMic });
+  });
+
   socket.on("send_message", (data) => {
     const { caseId, senderName, senderRole, content, timestamp } = data;
     const newMessage = {

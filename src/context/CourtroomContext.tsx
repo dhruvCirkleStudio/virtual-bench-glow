@@ -195,6 +195,10 @@ export const CourtroomProvider: React.FC<{
       setParticipants(prev => prev.map(p => p.id === participantId ? { ...p, hasCamera } : p));
     });
 
+    socketService.getSocket()?.on('mic_status_changed', ({ participantId, hasMic }: any) => {
+      setParticipants(prev => prev.map(p => p.id === participantId ? { ...p, isMuted: !hasMic } : p));
+    });
+
     socketService.getSocket()?.on('participant_left', ({ participantId, socketId }: any) => {
       webRTCService.closeConnection(socketId);
       setRemoteStreams(prev => {
@@ -207,6 +211,8 @@ export const CourtroomProvider: React.FC<{
 
     webRTCService.onRemoteStream((participantId, stream) => {
       console.log('Setting remote stream for:', participantId);
+      // We spread the previous state to ensure a new object reference for remoteStreams,
+      // which triggers a re-render of components using remoteStreams.
       setRemoteStreams(prev => ({ ...prev, [participantId]: stream }));
     });
 
@@ -225,9 +231,18 @@ export const CourtroomProvider: React.FC<{
       if (localStream) {
         localStream.getAudioTracks().forEach(track => track.enabled = next);
       }
+      // Update the local participant's isMuted state so the avatar glow reacts
+      const currentId = localParticipantIdRef.current;
+      setParticipants(prevParts =>
+        prevParts.map(p =>
+          p.id === currentId ? { ...p, isMuted: !next } : p
+        )
+      );
+      // Broadcast mic state to other users
+      socketService.getSocket()?.emit('mic_toggle', { caseId, participantId: currentId, hasMic: next });
       return next;
     });
-  }, [localStream]);
+  }, [localStream, caseId]);
 
   const toggleCamera = useCallback(async () => {
     if (!isCameraOn) {
