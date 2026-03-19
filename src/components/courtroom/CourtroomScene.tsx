@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect } from "react";
+import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -263,11 +263,12 @@ const LawyerTable = ({
   theme: string;
 }) => {
   const x = side === "left" ? -2.5 : 2.5;
-  const feltColor = theme === "light" ? "#4a3728" : "#6b4c10";
+  const feltColor = theme === "light" ? "#9f887a" : "#6b4c10";
   const woodColor = theme === "light" ? "#a07840" : "#5c2a0e";
   const woodDark = theme === "light" ? "#7a5c30" : "#3d1c06";
   const brassColor = "#b8860b";
-
+  // const brassColor = "black";
+  // 9f887a
   return (
     <group position={[x, 0, 0]}>
       {/* Table legs */}
@@ -369,8 +370,8 @@ const WitnessStand = ({ theme }: { theme: string }) => {
 
 const EvidenceScreen = ({ theme }: { theme: string }) => {
   const frameColor = "#1a1a2a";
-  const screenColor = theme === "light" ? "#ffffff" : "#282c3c";
-  const emissiveColor = theme === "light" ? "#f8fafc" : "#353a50";
+  const screenColor = theme === "light" ? "#ffffff" : "#232836";
+  const emissiveColor = theme === "light" ? "#f8fafc" : "#7e96c9";
   const brassColor = "#b8860b";
 
   return (
@@ -387,7 +388,7 @@ const EvidenceScreen = ({ theme }: { theme: string }) => {
       {/* Inner dark frame */}
       <mesh position={[0, 0, 0.04]}>
         <boxGeometry args={[6.0, 3.75, 0.06]} />
-        <meshStandardMaterial color={frameColor} roughness={0.2} />
+        <meshStandardMaterial color={frameColor} roughness={0.75} />
       </mesh>
       {/* Screen surface */}
       <mesh position={[0, 0, 0.08]}>
@@ -395,7 +396,9 @@ const EvidenceScreen = ({ theme }: { theme: string }) => {
         <meshStandardMaterial
           color={screenColor}
           emissive={emissiveColor}
-          emissiveIntensity={0.4}
+          emissiveIntensity={theme === "light" ? 0.45 : 1.8}
+          roughness={0.9}
+          metalness={0.02}
         />
       </mesh>
       {/* "EXHIBIT A" text */}
@@ -467,9 +470,10 @@ const Gallery = ({ theme }: { theme: string }) => {
 };
 
 const Floor = ({ theme }: { theme: string }) => {
-  // Use Grid for both themes for consistency
-  const floorColor = theme === "light" ? "#f8fafc" : "#020202";
-  const gridColor = theme === "light" ? "#cbd5e1" : "#5ec2ff";
+  // const floorColor = theme === "light" ? "#ffffff" : "#050505";
+  // const floorColor = theme === "light" ? "#ffffff" : "#101417";
+  const floorColor = theme === "light" ? "#ffffff" : "#1b1d21";
+  const gridColor = theme === "light" ? "#e2e8f0" : "#343841";
 
   return (
     <group>
@@ -481,12 +485,14 @@ const Floor = ({ theme }: { theme: string }) => {
         <planeGeometry args={[100, 100]} />
         <meshStandardMaterial
           color={floorColor}
-          roughness={theme === "light" ? 0.9 : 0.8}
+          roughness={0.96}
+          metalness={0.04}
         />
       </mesh>
       <Grid
         infiniteGrid
-        fadeDistance={40}
+        args={[100, 100]}
+        fadeDistance={60}
         fadeStrength={5}
         sectionSize={1.5}
         sectionThickness={1}
@@ -500,31 +506,211 @@ const Floor = ({ theme }: { theme: string }) => {
   );
 };
 
+const Walls = ({ theme }: { theme: string }) => {
+  const wallTopColor = theme === "light" ? "#fcfaf5" : "#4f473f";
+  const woodColor = theme === "light" ? "#a47d68" : "#120c09";
+  const stripEmissiveColor = theme === "light" ? "#fff2d1" : "#ffcc88";
+  const wallHeight = 25;
+  const wallSpan = 50;
+  const wainscotHeight = 1;
+
+  return (
+    <group>
+      {/* Front Wall (behind judge) */}
+      <group position={[0, wallHeight / 2, -25]}>
+        {/* Upper Wall - Height Significantly Reduced */}
+        <mesh position={[0, wainscotHeight / 2, 0]}>
+          <boxGeometry args={[wallSpan, wallHeight - wainscotHeight, 0.2]} />
+          <meshStandardMaterial
+            color={wallTopColor}
+            roughness={0.95}
+            metalness={0.02}
+          />
+        </mesh>
+        {/* Lower Wainscoting - Height Increased to 12m */}
+        <mesh position={[0, -wallHeight / 2 + wainscotHeight / 2, 0]}>
+          <boxGeometry args={[wallSpan, wainscotHeight, 0.25]} />
+          <meshStandardMaterial
+            color={woodColor}
+            roughness={0.88}
+            metalness={0.04}
+          />
+        </mesh>
+        {/* Cove Light Glow */}
+        <mesh position={[0, wallHeight / 2 - 0.2, 0.15]}>
+          <boxGeometry args={[wallSpan, 0.1, 0.1]} />
+          <meshStandardMaterial
+            color={theme === "light" ? "#f4eadb" : "#050505"}
+            emissive={stripEmissiveColor}
+            emissiveIntensity={theme === "light" ? 1.6 : 2.2}
+            roughness={1}
+            metalness={0}
+          />
+        </mesh>
+      </group>
+
+      {/* Back Wall */}
+      <group position={[0, wallHeight / 2, 25]} rotation={[0, Math.PI, 0]}>
+        <mesh position={[0, wainscotHeight / 2, 0]}>
+          <boxGeometry args={[wallSpan, wallHeight - wainscotHeight, 0.2]} />
+          <meshStandardMaterial
+            color={wallTopColor}
+            roughness={0.95}
+            metalness={0.02}
+          />
+        </mesh>
+        <mesh position={[0, -wallHeight / 2 + wainscotHeight / 2, 0]}>
+          <boxGeometry args={[wallSpan, wainscotHeight, 0.25]} />
+          <meshStandardMaterial
+            color={woodColor}
+            roughness={0.88}
+            metalness={0.04}
+          />
+        </mesh>
+      </group>
+
+      {/* Left Wall */}
+      <group position={[-25, wallHeight / 2, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <mesh position={[0, wainscotHeight / 2, 0]}>
+          <boxGeometry args={[wallSpan, wallHeight - wainscotHeight, 0.2]} />
+          <meshStandardMaterial
+            color={wallTopColor}
+            roughness={0.95}
+            metalness={0.02}
+          />
+        </mesh>
+        <mesh position={[0, -wallHeight / 2 + wainscotHeight / 2, 0]}>
+          <boxGeometry args={[wallSpan, wainscotHeight, 0.25]} />
+          <meshStandardMaterial
+            color={woodColor}
+            roughness={0.88}
+            metalness={0.04}
+          />
+        </mesh>
+        <mesh position={[0, wallHeight / 2 - 0.45, 0.15]}>
+          <boxGeometry args={[wallSpan - 4, 0.18, 0.12]} />
+          <meshStandardMaterial
+            color="#050505"
+            emissive={stripEmissiveColor}
+            emissiveIntensity={theme === "light" ? 1.4 : 2.6}
+            roughness={1}
+            metalness={0}
+          />
+        </mesh>
+      </group>
+
+      {/* Right Wall */}
+      <group position={[25, wallHeight / 2, 0]} rotation={[0, -Math.PI / 2, 0]}>
+        <mesh position={[0, wainscotHeight / 2, 0]}>
+          <boxGeometry args={[wallSpan, wallHeight - wainscotHeight, 0.2]} />
+          <meshStandardMaterial
+            color={wallTopColor}
+            roughness={0.95}
+            metalness={0.02}
+          />
+        </mesh>
+        <mesh position={[0, -wallHeight / 2 + wainscotHeight / 2, 0]}>
+          <boxGeometry args={[wallSpan, wainscotHeight, 0.25]} />
+          <meshStandardMaterial
+            color={woodColor}
+            roughness={0.88}
+            metalness={0.04}
+          />
+        </mesh>
+        <mesh position={[0, wallHeight / 2 - 0.45, 0.15]}>
+          <boxGeometry args={[wallSpan - 4, 0.18, 0.12]} />
+          <meshStandardMaterial
+            color="#050505"
+            emissive={stripEmissiveColor}
+            emissiveIntensity={theme === "light" ? 1.4 : 2.6}
+            roughness={1}
+            metalness={0}
+          />
+        </mesh>
+      </group>
+    </group>
+  );
+};
+
 const Pillars = ({ theme }: { theme: string }) => {
-  const pillarColor = theme === "light" ? "#e2e8f0" : "#0a0a0a";
+  const pillarColor = theme === "light" ? "#d1d5db" : "#334155";
   const pillarPositions: [number, number, number][] = [
-    [-6, 0, -5],
-    [-6, 0, 0],
-    [-6, 0, 5],
-    [6, 0, -5],
-    [6, 0, 0],
-    [6, 0, 5],
+    [-8, 0, -8],
+    [-8, 0, 0],
+    [-8, 0, 8],
+    [8, 0, -8],
+    [8, 0, 0],
+    [8, 0, 8],
   ];
 
   return (
     <group>
       {pillarPositions.map((pos, i) => (
-        <mesh key={i} position={[pos[0], 4, pos[2]]}>
-          <cylinderGeometry args={[0.3, 0.35, 12, 16]} />
-          <meshStandardMaterial color={pillarColor} roughness={0.7} />
+        <mesh key={i} position={[pos[0], 12.5, pos[2]]}>
+          <cylinderGeometry args={[0.4, 0.45, 25, 16]} />
+          <meshStandardMaterial
+            color={pillarColor}
+            roughness={0.2}
+            metalness={0.1}
+          />
         </mesh>
       ))}
     </group>
   );
 };
 
-const Walls = () => {
-  return null; // Unified design: No walls in either mode
+const Ceiling = ({ theme }: { theme: string }) => {
+  // const ceilingColor = theme === "light" ? "#ffffff" : "#0f172a";
+  const ceilingColor = theme === "light" ? "#ded9d3" : "#0f172a";
+  const lightColor = "#ffffff";
+  const panelColor = "#ffffff";
+  // ded9d3
+  const panels = [
+    [-6, -6],
+    [0, -6],
+    [6, -6],
+    [-6, 6],
+    [0, 6],
+    [6, 6],
+  ];
+
+  return (
+    <group position={[0, 25, 0]}>
+      {/* Main Ceiling Slab */}
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[50, 50]} />
+        <meshStandardMaterial color={ceilingColor} side={THREE.BackSide} />
+      </mesh>
+
+      {/* Recessed LED Panels */}
+      {panels.map(([x, z], i) => (
+        <group key={i} position={[x, -0.05, z]}>
+          {/* Panel Frame/Bezel */}
+          <mesh>
+            <boxGeometry args={[2.1, 0.02, 2.1]} />
+            <meshStandardMaterial color="#333" />
+          </mesh>
+          {/* Emissive Light Surface */}
+          <mesh position={[0, -0.01, 0]}>
+            <boxGeometry args={[2, 0.02, 2]} />
+            <meshStandardMaterial
+              color={panelColor}
+              emissive={panelColor}
+              // emissiveIntensity={2}
+              emissiveIntensity={0.5}
+            />
+          </mesh>
+          {/* <pointLight
+            intensity={2}
+            distance={20}
+            color={lightColor}
+            decay={2}
+          /> */}
+          {/* <ambientLight intensity={0.1} /> */}
+        </group>
+      ))}
+    </group>
+  );
 };
 
 const BrandText = () => (
@@ -541,8 +727,13 @@ const BrandText = () => (
 );
 
 const CourtroomScene = () => {
-  const { participants, currentUserRole, localStream, remoteStreams, localParticipantId } =
-    useCourtroomContext();
+  const {
+    participants,
+    currentUserRole,
+    localStream,
+    remoteStreams,
+    localParticipantId,
+  } = useCourtroomContext();
 
   const { theme } = useTheme();
   const currentTheme = (() => {
@@ -619,13 +810,15 @@ const CourtroomScene = () => {
 
     const observers = participants.filter((p) => p.role === "observer");
     // Observers face judge
-    observers.forEach((p, i) =>
+    observers.forEach((p, i) => {
+      const row = Math.floor(i / 3);
+      const col = i % 3;
       positions.push({
         participant: p,
-        pos: [-1.5 + i * 1.5, 0, 3.5],
+        pos: [-1.5 + col * 1.5, 0, 3.5 + row * 1.5],
         rot: [0, Math.PI, 0],
-      }),
-    );
+      });
+    });
 
     return positions;
   }, [participants]);
@@ -634,59 +827,56 @@ const CourtroomScene = () => {
     <div className="absolute inset-0" style={{ top: "56px", bottom: "80px" }}>
       <Canvas
         camera={{ position: [0, 5, 8], fov: 50 }}
-        shadows
-        gl={{ antialias: true }}
+        // gl={{ antialias: true }}
+        gl={{
+          antialias: true,
+          physicallyCorrectLights: true,
+          toneMappingExposure: currentTheme === "light" ? 0.95 : 0.72,
+        }}
       >
-        <ambientLight intensity={currentTheme === "light" ? 0.6 : 0.15} />
-        <directionalLight
-          position={[5, 10, 5]}
-          intensity={currentTheme === "light" ? 1.0 : 0.4}
-          castShadow
+        <ambientLight
+          intensity={currentTheme === "light" ? 0.3 : 0.2}
+          color={currentTheme === "light" ? "#fff5ea" : "#f6ede3"}
         />
-        {/* Unified focal spotlight */}
         <spotLight
-          position={[0, 10, 0]}
-          angle={0.6}
-          penumbra={0.5}
-          intensity={currentTheme === "light" ? 1.5 : 2}
-          castShadow
-          color={currentTheme === "light" ? "#ffffff" : "#ffffff"}
+          position={[0, 7.8, -1.6]}
+          target-position={[0, 0.9, -3.8]}
+          angle={currentTheme === "light" ? 0.42 : 0.38}
+          penumbra={0.85}
+          intensity={currentTheme === "light" ? 0.9 : 1.25}
+          distance={18}
+          decay={2}
+          color={currentTheme === "light" ? "#fff4df" : "#ffe0b0"}
         />
-        <pointLight
-          position={[0, 4, -4]}
-          intensity={currentTheme === "light" ? 0.2 : 1.2}
-          color="#ffd700"
-        />
-        <pointLight
-          position={[-3, 3, 0]}
-          intensity={currentTheme === "light" ? 0.1 : 0.4}
-          color="#4a7fd4"
-        />
-        <pointLight
-          position={[3, 3, 0]}
-          intensity={currentTheme === "light" ? 0.1 : 0.4}
-          color="#4a7fd4"
-        />
-
-        {/* Extra overhead glow for Dark Mode visibility */}
         {currentTheme === "dark" && (
-          <pointLight
-            position={[0, 8, -2]}
-            intensity={2.5}
-            distance={20}
-            color="#ffffff"
-          />
+          <>
+            <pointLight
+              position={[-16, 11.5, 0]}
+              intensity={0.2}
+              distance={20}
+              decay={2}
+              color="#ffcc88"
+            />
+            <pointLight
+              position={[16, 11.5, 0]}
+              intensity={0.2}
+              distance={20}
+              decay={2}
+              color="#ffcc88"
+            />
+          </>
         )}
 
         <Floor theme={currentTheme} />
+        <Walls theme={currentTheme} />
         <Pillars theme={currentTheme} />
+        <Ceiling theme={currentTheme} />
         <JudgeBench theme={currentTheme} />
         <LawyerTable side="left" theme={currentTheme} />
         <LawyerTable side="right" theme={currentTheme} />
         <WitnessStand theme={currentTheme} />
         <EvidenceScreen theme={currentTheme} />
         <Gallery theme={currentTheme} />
-        {/* BrandText hidden for unified minimalistic look */}
 
         {avatarPositions.map(({ participant, pos, rot }) => {
           const isLocal = participant.id === localParticipantId;
@@ -705,24 +895,26 @@ const CourtroomScene = () => {
         })}
 
         <ContactShadows
-          position={[0, -0.01, 0]}
-          opacity={currentTheme === "light" ? 0.3 : 0.6}
-          scale={20}
-          blur={1.5}
+          position={[0, -0.015, 0]}
+          opacity={currentTheme === "light" ? 0.3 : 0.5}
+          scale={40}
+          blur={2.5}
           far={10}
           resolution={512}
+          frames={1}
         />
         <OrbitControls
           makeDefault
-          maxPolarAngle={Math.PI / 2.2}
-          minDistance={4}
+          // maxPolarAngle={Math.PI / 2.2}
+          maxPolarAngle={180}
+          minDistance={2}
           maxDistance={15}
           target={[0, 1.5, -1]}
         />
         {/* Fog effect restricted to Dark mode */}
-        {currentTheme === "dark" && (
-          <fog attach="fog" args={["#000000", 10, 25]} />
-        )}
+        {/* {currentTheme === "dark" && (
+          <fog attach="fog" args={["#000000", 5, 20]} />
+        )} */}
         {/* Horizon light effect */}
         <mesh position={[0, 0, -60]}>
           <planeGeometry args={[500, 100]} />
