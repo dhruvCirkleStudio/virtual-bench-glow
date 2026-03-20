@@ -166,6 +166,20 @@ io.on("connection", (socket) => {
     io.to(caseId).emit("receive_message", newMessage);
     console.log(`Message in ${caseId} from ${senderName}: ${content}`);
   });
+ 
+  socket.on("new_evidence", (data) => {
+    const { caseId, evidenceItem } = data;
+    // Broadcast newly added evidence to everyone else
+    socket.to(caseId).emit("receive_evidence", evidenceItem);
+    console.log(`New evidence added in ${caseId}: ${evidenceItem.name}`);
+  });
+
+  socket.on("present_evidence", (data) => {
+    const { caseId, evidenceId } = data;
+    // Broadcast which evidence should be presented
+    io.to(caseId).emit("evidence_presented", evidenceId);
+    console.log(`Evidence ${evidenceId} is now being presented in ${caseId}`);
+  });
 
   socket.on("disconnect", () => {
     const p = participants[socket.id];

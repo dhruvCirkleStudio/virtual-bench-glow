@@ -7,10 +7,15 @@ import {
   MicOff,
   Shield,
   Activity,
-  ChevronRight,
   Settings2,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const JudgeControlPanel = () => {
   const {
@@ -20,56 +25,67 @@ const JudgeControlPanel = () => {
     participants,
     muteParticipant,
   } = useCourtroomContext();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   if (currentUserRole !== "judge") return null;
 
   return (
     <div className="fixed top-20 right-6 z-50 flex flex-col items-end gap-2">
-      <AnimatePresence mode="wait">
-        {!isOpen ? (
-          <motion.button
-            key="toggle-open"
-            initial={{ opacity: 0, scale: 0.8, rotate: -90 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            exit={{ opacity: 0, scale: 0.8, rotate: 90 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsOpen(true)}
-            className="p-3.5 rounded-2xl bg-primary text-primary-foreground shadow-[0_0_20px_rgba(var(--primary),0.3)] hover:shadow-[0_0_30px_rgba(var(--primary),0.5)] transition-all glow-gold flex items-center justify-center"
-          >
-            <Settings2 className="w-5 h-5" />
-          </motion.button>
-        ) : (
-          <motion.div
-            key="panel"
-            initial={{ opacity: 0, x: 20, scale: 0.95 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 20, scale: 0.95 }}
-            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-            className="w-64 glass-panel-strong rounded-2xl border border-border/50 shadow-2xl overflow-hidden backdrop-blur-xl origin-top-right"
-          >
-            <div className="px-5 py-4 border-b border-border/40 bg-gradient-to-r from-primary/10 to-transparent flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/20 text-primary">
-                  <Shield className="w-4 h-4" />
+      <div className="grid grid-cols-1 grid-rows-1 items-start justify-items-end">
+        <AnimatePresence>
+          {!isOpen ? (
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <motion.button
+                  key="toggle-open"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.1, ease: "easeOut" }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsOpen(true)}
+                  className="grid-in-layer p-3.5 rounded-2xl bg-primary text-primary-foreground shadow-[0_0_20px_rgba(var(--primary),0.3)] hover:shadow-[0_0_30px_rgba(var(--primary),0.5)] transition-all glow-gold flex items-center justify-center"
+                  style={{ gridArea: "1 / 1 / 2 / 2" }}
+                >
+                  <Settings2 className="w-5 h-5" />
+                </motion.button>
+              </TooltipTrigger>
+              <TooltipContent side="left">
+                <p>Judge Control Panel</p>
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <motion.div
+              key="panel"
+              initial={{ opacity: 0, x: 20, scale: 0.98 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 20, scale: 0.98 }}
+              transition={{ duration: 0.1, ease: "easeOut" }}
+              className="w-64 glass-panel-strong rounded-2xl border border-border/50 shadow-2xl overflow-hidden backdrop-blur-xl origin-top-right"
+              style={{ gridArea: "1 / 1 / 2 / 2" }}
+            >
+              <div className="px-5 py-4 border-b border-border/40 bg-gradient-to-r from-primary/10 to-transparent flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/20 text-primary">
+                    <Shield className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-sm text-foreground tracking-tight">
+                      Judge Controls
+                    </h3>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">
+                      Session Management
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-display font-bold text-sm text-foreground tracking-tight">
-                    Judge Controls
-                  </h3>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">
-                    Session Management
-                  </p>
-                </div>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground transition-colors"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
 
             <div className="p-4 space-y-3">
               <div className="space-y-2">
@@ -139,6 +155,7 @@ const JudgeControlPanel = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 };

@@ -30,6 +30,8 @@ export interface EvidenceItem {
   uploadedBy: string;
   uploadedAt: Date;
   isPresenting: boolean;
+  url?: string;
+  thumbnailUrl?: string;
 }
 
 export const ROLE_COLORS: Record<Role, string> = {

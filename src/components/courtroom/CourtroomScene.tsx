@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect, useState } from "react";
+import { useRef, useMemo, useEffect, useState, memo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -6,7 +6,9 @@ import {
   Environment,
   ContactShadows,
   Grid,
+  useTexture,
 } from "@react-three/drei";
+import { Suspense } from "react";
 import { useCourtroomContext } from "@/context/CourtroomContext";
 import { ROLE_COLORS, type Participant, ROLE_LABELS } from "@/types/courtroom";
 import { useTheme } from "@/components/theme-provider";
@@ -29,15 +31,14 @@ const VideoScreen = ({
     v.muted = true;
     v.autoplay = true;
     v.playsInline = true;
-    
+
     // Crucial for Three.js VideoTexture: ensure metadata is loaded
     v.onloadedmetadata = () => {
-      v.play().catch((e) => console.error("[VideoScreen] Play failed:", e));
+      v.play().catch(() => {});
     };
 
     // If tracks are added later, re-attempt play
     const handleAddTrack = () => {
-      console.log("[VideoScreen] Track added to stream");
       v.play().catch(() => {});
     };
 
@@ -132,10 +133,7 @@ const Avatar3D = ({
       )}
       {/* Mic-on soft ground disc */}
       {isMicActive && (
-        <mesh
-          position={[0, 0.01, 0]}
-          rotation={[-Math.PI / 2, 0, 0]}
-        >
+        <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <circleGeometry args={[0.35, 48]} />
           <meshBasicMaterial color="#4ade80" transparent opacity={0.1} />
         </mesh>
@@ -424,7 +422,25 @@ const WitnessStand = ({ theme }: { theme: string }) => {
   );
 };
 
+const ImageTexture = memo(({ url }: { url: string }) => {
+  const texture = useTexture(url);
+  return (
+    <mesh position={[0, 0, 0.1]}>
+      <planeGeometry args={[5.2, 2.9]} />
+      <meshBasicMaterial map={texture} toneMapped={false} />
+    </mesh>
+  );
+});
+
+ImageTexture.displayName = "ImageTexture";
+
 const EvidenceScreen = ({ theme }: { theme: string }) => {
+  const { evidence } = useCourtroomContext();
+  const activeEvidence = useMemo(
+    () => evidence.find((e) => e.isPresenting),
+    [evidence],
+  );
+
   const frameColor = "#1a1a2a";
   const screenColor = theme === "light" ? "#ffffff" : "#282c3c";
   const emissiveColor = theme === "light" ? "#f8fafc" : "#353a50";
@@ -455,25 +471,106 @@ const EvidenceScreen = ({ theme }: { theme: string }) => {
           emissiveIntensity={0.4}
         />
       </mesh>
-      {/* "EXHIBIT A" text */}
-      <Text
-        position={[0, 0.45, 0.12]}
-        fontSize={0.25}
-        color="#d4a542"
-        anchorX="center"
-        font={undefined}
+      {/* Active Evidence Content */}
+      <Suspense
+        fallback={
+          <Text position={[0, 0, 0.1]} color="gold">
+            Loading Texture...
+          </Text>
+        }
       >
-        EXHIBIT A
-      </Text>
-      <Text
-        position={[0, -0.3, 0.12]}
-        fontSize={0.12}
-        color={theme === "light" ? "#475569" : "#8899aa"}
-        anchorX="center"
-        font={undefined}
-      >
-        Contract_Agreement_2025.pdf
-      </Text>
+        {(activeEvidence?.thumbnailUrl || activeEvidence?.url) &&
+          (activeEvidence.type === "image" ||
+            activeEvidence.type === "pdf") && (
+            <ImageTexture
+              url={activeEvidence.thumbnailUrl || activeEvidence.url!}
+            />
+          )}
+      </Suspense>
+      {/* Active Evidence Display (Text overlay if no image or extra info) */}
+      {activeEvidence && (
+        <group
+          position={[
+            0,
+            0,
+            activeEvidence.type === "image" || activeEvidence.type === "pdf"
+              ? 0.12
+              : 0.1,
+          ]}
+        >
+          {!(activeEvidence.thumbnailUrl || activeEvidence.url) ||
+          (activeEvidence.type !== "image" && activeEvidence.type !== "pdf") ? (
+            <>
+              <Text
+                position={[0, 0.45, 0.02]}
+                fontSize={0.25}
+                color="#d4a542"
+                anchorX="center"
+                font={undefined}
+              >
+                EXHIBIT PRESENTED
+              </Text>
+              <Text
+                position={[0, -0.1, 0.02]}
+                fontSize={0.18}
+                color={theme === "light" ? "#1e293b" : "#f1f5f9"}
+                anchorX="center"
+                font={undefined}
+                maxWidth={4.5}
+                textAlign="center"
+              >
+                {activeEvidence.name}
+              </Text>
+            </>
+          ) : (
+            // Small subtle label for images/PDFs
+            <Text
+              position={[2.4, -1.4, 0.02]}
+              fontSize={0.08}
+              color="#d4a542"
+              anchorX="right"
+              font={undefined}
+            >
+              {activeEvidence.name}
+            </Text>
+          )}
+          <Text
+            position={
+              activeEvidence.type === "image" || activeEvidence.type === "pdf"
+                ? [-2.4, -1.4, 0.02]
+                : [0, -0.6, 0.02]
+            }
+            fontSize={0.1}
+            color={
+              theme === "light"
+                ? activeEvidence.type === "image" ||
+                  activeEvidence.type === "pdf"
+                  ? "#ffffff"
+                  : "#64748b"
+                : "#94a3b8"
+            }
+            anchorX={
+              activeEvidence.type === "image" || activeEvidence.type === "pdf"
+                ? "left"
+                : "center"
+            }
+            font={undefined}
+          >
+            Uploaded by: {activeEvidence.uploadedBy}
+          </Text>
+        </group>
+      )}
+      {!activeEvidence && (
+        <Text
+          position={[0, 0, 0.1]}
+          fontSize={0.2}
+          color={theme === "light" ? "#cbd5e1" : "#475569"}
+          anchorX="center"
+          font={undefined}
+        >
+          AWAITING EVIDENCE
+        </Text>
+      )}
       {/* Screen corner screws */}
       {[
         [-2.925, 1.875],
@@ -598,8 +695,13 @@ const BrandText = () => (
 );
 
 const CourtroomScene = () => {
-  const { participants, currentUserRole, localStream, remoteStreams, localParticipantId } =
-    useCourtroomContext();
+  const {
+    participants,
+    currentUserRole,
+    localStream,
+    remoteStreams,
+    localParticipantId,
+  } = useCourtroomContext();
 
   const { theme } = useTheme();
   const currentTheme = (() => {
@@ -694,7 +796,7 @@ const CourtroomScene = () => {
         shadows
         gl={{ antialias: true }}
       >
-        <ambientLight intensity={currentTheme === "light" ? 0.6 : 0.15} />
+        <ambientLight intensity={currentTheme === "light" ? 0.6 : 0.2} />
         <directionalLight
           position={[5, 10, 5]}
           intensity={currentTheme === "light" ? 1.0 : 0.4}
