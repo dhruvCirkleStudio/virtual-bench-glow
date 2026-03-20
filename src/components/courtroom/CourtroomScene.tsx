@@ -178,12 +178,15 @@ const Avatar3D = ({
 
 // Courtroom furniture
 const JudgeBench = ({ theme }: { theme: string }) => {
-  const woodColor = theme === "light" ? "#6b4f3a" : "#6b3510";
+  // const woodColor = theme === "light" ? "#6b4f3a" : "#6b3510";
+  const woodColor = theme === "light" ? "#6b4f3a" : "#7d675b";
   const woodDark = theme === "light" ? "#4d3828" : "#4a2208";
   const feltColor = theme === "light" ? "#4a3728" : "#1a2d4a";
   const brassColor = "#d4a030";
-  const marbleColor = theme === "light" ? "#dce0e6" : "#8a7d6a";
-  const marbleColor2 = theme === "light" ? "#cdd1d8" : "#7d7060";
+  // const marbleColor = theme === "light" ? "#dce0e6" : "#8a7d6a";
+  const marbleColor = theme === "light" ? "#dce0e6" : "#696f7b";
+  // const marbleColor2 = theme === "light" ? "#cdd1d8" : "#7d7060";
+  const marbleColor2 = theme === "light" ? "#cdd1d8" : "#696f7b";
 
   return (
     <group position={[0, 0, -4]}>
@@ -319,8 +322,10 @@ const LawyerTable = ({
 }) => {
   const x = side === "left" ? -2.5 : 2.5;
   const feltColor = theme === "light" ? "#4a3728" : "#6b4c10";
-  const woodColor = theme === "light" ? "#a07840" : "#5c2a0e";
-  const woodDark = theme === "light" ? "#7a5c30" : "#3d1c06";
+  // const woodColor = theme === "light" ? "#a07840" : "#5c2a0e";
+  const woodColor = theme === "light" ? "#a07840" : "#5F4744";
+  // const woodDark = theme === "light" ? "#7a5c30" : "#3d1c06";
+  const woodDark = theme === "light" ? "#7a5c30" : "#4A3735";
   const brassColor = "#b8860b";
 
   return (
@@ -348,10 +353,10 @@ const LawyerTable = ({
         <meshStandardMaterial color={woodColor} roughness={0.4} />
       </mesh>
       {/* Felt surface on table */}
-      <mesh position={[0, 0.605, 0]}>
+      {/* <mesh position={[0, 0.605, 0]}>
         <boxGeometry args={[1.75, 0.01, 0.82]} />
         <meshStandardMaterial color={feltColor} roughness={0.9} />
-      </mesh>
+      </mesh> */}
       {/* Brass edge trim */}
       <mesh position={[0, 0.58, 0.5]}>
         <boxGeometry args={[1.9, 0.03, 0.03]} />
@@ -622,8 +627,11 @@ const Gallery = ({ theme }: { theme: string }) => {
 
 const Floor = ({ theme }: { theme: string }) => {
   // Use Grid for both themes for consistency
-  const floorColor = theme === "light" ? "#f8fafc" : "#020202";
-  const gridColor = theme === "light" ? "#cbd5e1" : "#5ec2ff";
+  // const floorColor = theme === "light" ? "#f8fafc" : "#020202";
+  // const floorColor = theme === "light" ? "#f8fafc" : "#212126";
+  const floorColor = theme === "light" ? "#f8fafc" : "#636672";
+  // const gridColor = theme === "light" ? "#cbd5e1" : "#5ec2ff";
+  const gridColor = theme === "light" ? "#cbd5e1" : "#353232ff";
 
   return (
     <group>
@@ -655,7 +663,9 @@ const Floor = ({ theme }: { theme: string }) => {
 };
 
 const Pillars = ({ theme }: { theme: string }) => {
-  const pillarColor = theme === "light" ? "#e2e8f0" : "#0a0a0a";
+  // const pillarColor = theme === "light" ? "#e2e8f0" : "#0a0a0a";
+  // const pillarColor = theme === "light" ? "#e2e8f0" : "#1e293b";
+  const pillarColor = theme === "light" ? "#e2e8f0" : "#797C86";
   const pillarPositions: [number, number, number][] = [
     [-6, 0, -5],
     [-6, 0, 0],
@@ -796,46 +806,65 @@ const CourtroomScene = () => {
         shadows
         gl={{ antialias: true }}
       >
-        <ambientLight intensity={currentTheme === "light" ? 0.6 : 0.2} />
+        {/* <Environment preset="night" /> */}
+        {/* <color attach="background" args={["#000000"]} /> */}
+        <ambientLight
+          color="#F9F4EC"
+          intensity={currentTheme === "light" ? 0.6 : 0.2}
+        />
+        {/* <directionalLight
+          position={[5, 10, 5]}
+          intensity={currentTheme === "light" ? 1.0 : 0.4}
+          castShadow
+        /> */}
         <directionalLight
           position={[5, 10, 5]}
           intensity={currentTheme === "light" ? 1.0 : 0.4}
           castShadow
         />
         {/* Unified focal spotlight */}
-        <spotLight
+        {/* <spotLight
           position={[0, 10, 0]}
           angle={0.6}
           penumbra={0.5}
-          intensity={currentTheme === "light" ? 1.5 : 2}
+          intensity={currentTheme === "light" ? 1.5 : 2.2}
           castShadow
           color={currentTheme === "light" ? "#ffffff" : "#ffffff"}
+        /> */}
+        <spotLight
+          color="#F9F4EC"
+          position={[0, 20, 0]} // straight above
+          angle={0.4} // focused beam
+          penumbra={0.5} // soft edges
+          intensity={currentTheme === "light" ? 1.5 : 300}
+          castShadow
         />
-        <pointLight
+        <pointLight position={[0, 2, 4]} intensity={0.5} distance={12} />
+        {/* <pointLight
           position={[0, 4, -4]}
           intensity={currentTheme === "light" ? 0.2 : 1.2}
           color="#ffd700"
-        />
-        <pointLight
+        /> */}
+        {/* <pointLight
           position={[-3, 3, 0]}
           intensity={currentTheme === "light" ? 0.1 : 0.4}
           color="#4a7fd4"
-        />
-        <pointLight
+        /> */}
+        {/* <pointLight
           position={[3, 3, 0]}
           intensity={currentTheme === "light" ? 0.1 : 0.4}
           color="#4a7fd4"
-        />
+        /> */}
 
         {/* Extra overhead glow for Dark Mode visibility */}
-        {currentTheme === "dark" && (
+        {/* {currentTheme === "dark" && (
           <pointLight
             position={[0, 8, -2]}
             intensity={2.5}
             distance={20}
             color="#ffffff"
           />
-        )}
+        )} */}
 
         <Floor theme={currentTheme} />
         <Pillars theme={currentTheme} />
@@ -873,15 +902,19 @@ const CourtroomScene = () => {
         />
         <OrbitControls
           makeDefault
-          maxPolarAngle={Math.PI / 2.2}
+          // maxPolarAngle={Math.PI / 2.2}
+          maxPolarAngle={10}
           minDistance={4}
           maxDistance={15}
           target={[0, 1.5, -1]}
         />
         {/* Fog effect restricted to Dark mode */}
-        {currentTheme === "dark" && (
+        {/* {currentTheme === "dark" && (
           <fog attach="fog" args={["#000000", 10, 25]} />
-        )}
+        )} */}
+        {/* {currentTheme === "dark" && (
+          <fog attach="fog" args={["#0f172a", 10, 25]} />
+        )} */}
         {/* Horizon light effect */}
         <mesh position={[0, 0, -60]}>
           <planeGeometry args={[500, 100]} />
