@@ -49,9 +49,9 @@ class WebRTCService {
     pc.ontrack = (event) => {
       console.log('Received remote track from:', participantId, event.track.kind);
       
-      if (!this.remoteStreams[participantId]) {
+      const isNewStream = !this.remoteStreams[participantId];
+      if (isNewStream) {
         this.remoteStreams[participantId] = new MediaStream();
-        this.onRemoteStreamCallbacks.forEach(cb => cb(participantId, this.remoteStreams[participantId]));
       }
 
       const stream = this.remoteStreams[participantId];
@@ -59,6 +59,9 @@ class WebRTCService {
       if (!stream.getTracks().find(t => t.id === event.track.id)) {
         stream.addTrack(event.track);
       }
+
+      // Notify listeners (especially for newly added tracks in existing streams)
+      this.onRemoteStreamCallbacks.forEach(cb => cb(participantId, stream));
     };
 
     pc.onconnectionstatechange = () => {

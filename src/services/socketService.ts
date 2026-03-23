@@ -59,6 +59,30 @@ class SocketService {
       this.socket.on('participant_joined', callback);
     }
   }
+
+  sendNewEvidence(caseId: string, evidenceItem: any) {
+    if (this.socket) {
+      this.socket.emit('new_evidence', { caseId, evidenceItem });
+    }
+  }
+
+  onReceiveEvidence(callback: (evidenceItem: any) => void) {
+    if (this.socket) {
+      this.socket.on('receive_evidence', callback);
+    }
+  }
+
+  presentEvidence(caseId: string, evidenceId: string) {
+    if (this.socket) {
+      this.socket.emit('present_evidence', { caseId, evidenceId });
+    }
+  }
+
+  onEvidencePresented(callback: (evidenceId: string) => void) {
+    if (this.socket) {
+      this.socket.on('evidence_presented', callback);
+    }
+  }
 }
 
 const socketService = new SocketService();
