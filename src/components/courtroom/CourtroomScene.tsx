@@ -182,7 +182,8 @@ const JudgeBench = ({ theme }: { theme: string }) => {
   // const woodColor = theme === "light" ? "#6b4f3a" : "#7d675b";
   const woodColor = theme === "light" ? "#94796B" : "#7d675b";
   const woodDark = theme === "light" ? "#4d3828" : "#4a2208";
-  const feltColor = theme === "light" ? "#4a3728" : "#1a2d4a";
+  // const feltColor = theme === "light" ? "#4a3728" : "#1a2d4a";
+  const feltColor = theme === "light" ? "#4a3728" : "#212226";
   const brassColor = "#d4a030";
   // const marbleColor = theme === "light" ? "#dce0e6" : "#8a7d6a";
   const marbleColor = theme === "light" ? "#696f7b" : "#696f7b";
@@ -383,10 +384,11 @@ const LawyerTable = ({
 
 const WitnessStand = ({ theme }: { theme: string }) => {
   // const woodColor = theme === "light" ? "#8b6914" : "#5c2a0e";
-  const woodColor = theme === "light" ? "#94796B" : "#5c2a0e";
+  // const woodColor = theme === "light" ? "#94796B" : "#5c2a0e";
+  const woodColor = theme === "light" ? "#94796B" : "#7d675b";
   const woodDark = theme === "light" ? "#6b4c10" : "#3d1c06";
   // const feltColor = theme === "light" ? "#8b4513" : "#1a4731";
-  const feltColor = theme === "light" ? "#4a2208" : "#1a4731";
+  const feltColor = theme === "light" ? "#4a2208" : "#212226";
   const brassColor = "#b8860b";
 
   return (
@@ -1011,7 +1013,6 @@ const CourtroomScene = () => {
         <Floor theme={currentTheme} />
         {/* <Walls theme={currentTheme} /> */}
         <Pillars theme={currentTheme} />
-        <Ceiling theme={currentTheme} />
         <JudgeBench theme={currentTheme} />
         <LawyerTable side="left" theme={currentTheme} />
         <LawyerTable side="right" theme={currentTheme} />
