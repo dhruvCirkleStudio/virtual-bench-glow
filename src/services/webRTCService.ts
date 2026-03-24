@@ -18,12 +18,25 @@ class WebRTCService {
     // If a connection already exists, don't create a new one unless specifically asked
     // or if the existing one is closed.
     if (this.peerConnections[targetSocketId]) {
-      const state = this.peerConnections[targetSocketId].connectionState;
+      const pc = this.peerConnections[targetSocketId];
+      const state = pc.connectionState;
       if (state !== 'closed' && state !== 'failed') {
         console.log(`Connection to ${targetSocketId} already exists in state: ${state}`);
-        return this.peerConnections[targetSocketId];
+        
+        // Ensure local tracks are added if they are now available but weren't before
+        if (localStream) {
+          localStream.getTracks().forEach(track => {
+            const alreadyAdded = pc.getSenders().find(s => s.track === track);
+            if (!alreadyAdded) {
+              console.log(`Adding missing track ${track.kind} to existing connection ${targetSocketId}`);
+              pc.addTrack(track, localStream);
+            }
+          });
+        }
+        
+        return pc;
       }
-      this.peerConnections[targetSocketId].close();
+      pc.close();
     }
 
     console.log(`Creating peer connection for ${participantId} (${targetSocketId}), isOffer: ${isOffer}`);
@@ -71,7 +84,10 @@ class WebRTCService {
 
     if (isOffer) {
       try {
-        const offer = await pc.createOffer();
+        const offer = await pc.createOffer({
+          offerToReceiveAudio: true,
+          offerToReceiveVideo: true
+        });
         await pc.setLocalDescription(offer);
         socketService.getSocket()?.emit('webrtc_signal', {
           targetSocketId,
@@ -90,7 +106,10 @@ class WebRTCService {
     if (pc) {
       try {
         console.log(`Renegotiating with ${targetSocketId}`);
-        const offer = await pc.createOffer();
+        const offer = await pc.createOffer({
+          offerToReceiveAudio: true,
+          offerToReceiveVideo: true
+        });
         await pc.setLocalDescription(offer);
         socketService.getSocket()?.emit('webrtc_signal', {
           targetSocketId,
